@@ -1,0 +1,21 @@
+{
+    "appenders": {
+        "default": { 
+            "type": "console",
+            "layout": {
+                "type": "pattern",
+                "pattern": "%r %p %c: %m"
+            }
+        }
+    },
+    "categories": {
+        "default": {
+            "appenders": [ "default" ],
+            "level": "debug"
+        },
+        "zic": {
+            "appenders": [ "default" ],
+            "level": "trace"
+        }
+    }
+}
