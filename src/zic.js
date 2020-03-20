@@ -104,28 +104,28 @@ export default (argv) => {
             options.push(val);
         }
     }
-    
+
     logger.info(getVersion());
     logger.info("Convert IANA tzdata files to json.\n");
-    
+
     let rules = {};
     let zones = {};
-    
+
     // find all the files first
     ["africa", "antarctica", "asia", "australasia", "europe", "northamerica", "southamerica"].forEach(fileName => {
         let file = new IANAFile(path.join(settings.sourceDir, fileName));
-        
+
         rules = {
             ...rules,
             ...file.getRules()
         };
-        
+
         zones = {
             ...zones,
             ...file.getZones()
         };
     });
-    
+
     logger.info("Done");
     log4js.shutdown(function() {
         process.exit(exitValue);

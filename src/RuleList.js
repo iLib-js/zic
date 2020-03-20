@@ -35,7 +35,7 @@ export default class RuleList {
      * Add a rule to the set
      */
     addRule(rule) {
-        
+
     }
 
     /**
@@ -44,7 +44,7 @@ export default class RuleList {
      * @returns {number} The index of the rule that applies on that date
      */
     findRule(date) {
-        
+
     }
 
     /**
@@ -53,10 +53,10 @@ export default class RuleList {
      * @param {Rule} the rule at the given index
      */
     getRule(index) {
-        
+
     }
 
     toJson() {
-        
+
     }
 }

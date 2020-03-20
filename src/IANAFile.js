@@ -29,7 +29,7 @@ class IANAFile {
     constructor(pathName) {
         this.rules = {};
         this.zones = {};
-        
+
         const data = fs.readFileSync(pathName, "utf-8");
         const lines = data.split(/\n/g);
         let recentZone = false;
@@ -38,11 +38,11 @@ class IANAFile {
         lines.forEach(line => {
             if (line[0] !== '#') {
                 const fields = line.split(/\s+/g);
-                
+
                 if (fields.length > 1) {
                     if (fields[0] === "Rule") {
                         let rule = new Rule(fields);
-                        
+
                         let ruleList = this.rules[rule.getName()];
                         if (!ruleList) {
                             ruleList = new RuleList({
@@ -50,7 +50,7 @@ class IANAFile {
                             });
                             this.rules[rule.getName()] = ruleList;
                         }
-                        
+
                         ruleList.addRule(rule);
                         recentZone = false;
                         recentZoneName = undefined;
@@ -84,7 +84,7 @@ class IANAFile {
     getRules() {
         return this.rules;
     }
-    
+
     getZones() {
         return this.zones;
     }

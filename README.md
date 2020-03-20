@@ -55,13 +55,13 @@ during a particular time interval. This includes the offset from UTC, when the d
 time starts and ends, and how much time is saved during daylight time. A rule may be used by multiple time zones
 at particular times. For example, the "US" rule is set by the US federal government, and it is used by many zones
 throughout the US at various times in history. In fact, over the lifetime of the applicability of the rule,
-a particular time zone may decide to use or not use a rule and switch which rule it observes. 
+a particular time zone may decide to use or not use a rule and switch which rule it observes.
 
 People tend to think of "time zones" as a particular band of the earth roughly 15 degrees of longitude wide that
 shares the same time. The real picture is much more complicated than that. The problem is that governments are in
 charge of the rules for their own jurisdiction, and they can decide the time zone rules for themselves. In many
 countries, the federal government decides on the time zone rules for the whole country. This is very common for
-small countries where multiple time zones do not make sense. In other countries, particularly in larger ones, 
+small countries where multiple time zones do not make sense. In other countries, particularly in larger ones,
 first level regional divisions (states in the US) can also make their own time zone decisions. Even second level
 or third level subdivisions also have the ability to decide for themselves.
 
@@ -95,21 +95,21 @@ The format is:
                                 // or all of the "m", "r", and "t" properties, but not both sets.
                 "m": 10,        // month that it starts
                 "r": "l0",      // rule for the day it starts "l" = "last", numbers are Sun=0 through Sat=6.
-                                // Other syntax is "0>7". This means the 0-day (Sun) after the 7th of the 
+                                // Other syntax is "0>7". This means the 0-day (Sun) after the 7th of the
                                 // month. Other possible operators are <, >, <=, >=
                 "t": "2:0",     // time of day that the DST turns on, hours:minutes
                 "v": "1:0",     // amount of time saved in hours:minutes
                 "c": "D"        // character to replace into the abbreviation for daylight time
             },
             "e": {              // info about the end of DST
-                "j": 78322.5    // Julian day when the transition happens. Either specify the "j" property 
+                "j": 78322.5    // Julian day when the transition happens. Either specify the "j" property
                                 // or all of the "m", "r", and "t" properties, but not both sets.
                 "m": 3,         // month that it ends
                 "r": "l0",      // rule for the day it ends "l" = "last", numbers are Sun=0 through Sat=6.
                                 // Other syntax is "0>7". This means the 0-day (Sun) after the 7th of the
                                 // month. Other possible operators are <, >, <=, >=
                 "t": "2:0",     // time of day that the DST turns off, hours:minutes
-                "c": "S"        // character to replace into the abbreviation for standard time 
+                "c": "S"        // character to replace into the abbreviation for standard time
             }
         }
     ]
@@ -123,8 +123,8 @@ interval are pre-calcuated. That is, each interval has a start and an end rule a
 rule is shared with other intervals. That means that if a start or
 end rule does not change between intervals, then that rule is repeated as necessary. Even though some rules are
 redundant, the idea was to make it dead simple to for implementors to figure out what rules apply to a particular
-given point of time. This also ensure that there is no rule gap between in the intervals. 
- 
+given point of time. This also ensure that there is no rule gap between in the intervals.
+
 ### Zone Info Files
 
 A zone info file contains information about a particular time zone. The zone info files are organized in a directory
@@ -142,11 +142,11 @@ Each file has the following format:
                 "to": "1968-03-20"  // date that this rule ended, or "max" if it is ongoing
             },
             "o": "-7:0",            // offset from UTC
-            "f": "M{c}T",           // standard abbreviation. For time zones that observe DST, the {c}  
+            "f": "M{c}T",           // standard abbreviation. For time zones that observe DST, the {c}
                                     // replacement is replaced with the letter in the e.c or s.c properties
                                     // of the rule
             "rule": "US[4]"         // The rule that is observed in this interval, and the index of the
-                                    // particular rule in the rule file that is used 
+                                    // particular rule in the rule file that is used
         },
         {                           // example interval where the zone does not observe DST at all
             "years": {

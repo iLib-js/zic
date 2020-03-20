@@ -41,7 +41,7 @@ export default class ZoneList {
      * Add a Zone to the set
      */
     addZone(zone) {
-        
+
     }
 
     /**
@@ -50,10 +50,10 @@ export default class ZoneList {
      * @returns {Zone} The zone that applies on that date
      */
     findZone(date) {
-        
+
     }
 
     toJson() {
-        
+
     }
 }

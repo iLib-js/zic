@@ -32,7 +32,7 @@ class Rule {
     }
 
     toJson() {
-        
+
     }
 };
 
