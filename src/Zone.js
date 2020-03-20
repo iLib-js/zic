@@ -22,7 +22,7 @@ const logger = log4js.getLogger("zic.Zone");
 
 export default class Zone {
     constructor(fields) {
-        logger.debug("fields are " + JSON.stringify(fields));
+        logger.trace("fields are " + JSON.stringify(fields));
         this.name = fields[1];
         logger.debug("Found zone " + this.name);
     }

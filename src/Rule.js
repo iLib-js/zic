@@ -28,7 +28,7 @@ class Rule {
     }
 
     getName() {
-        
+        return this.name;
     }
 
     toJson() {
