@@ -17,75 +17,57 @@
  * limitations under the License.
  */
 
-import RuleList from './RuleList';
 import Transition from './Transition';
-
-import ZoneList from './ZoneList';
-import Zone from './Zone';
+import RawZone from './RawZone';
 
 const fs = require("fs");
 
 class IANAFile {
     constructor(pathName) {
-        this.rules = {};
-        this.zones = {};
+        this.transitions = [];
+        this.zones = [];
 
-        const data = fs.readFileSync(pathName, "utf-8");
-        const lines = data.split(/\n/g);
+        if (pathName) {
+            const data = fs.readFileSync(pathName, "utf-8");
+            this.setContents(data);
+        }
+    }
+    
+    setContents(contents) {
+        const lines = contents.split(/\n/g);
         let recentZone = false;
         let recentZoneName;
 
         lines.forEach(line => {
-            if (line[0] !== '#') {
-                const fields = line.split(/\s+/g);
+            const cleanLine = line.replace(/#.*$/g, "");
+            const fields = cleanLine.split(/\s+/g);
 
-                if (fields.length > 1) {
-                    if (fields[0] === "Rule") {
-                        let transition = new Transition(fields);
-
-                        let ruleList = this.rules[transition.getName()];
-                        if (!ruleList) {
-                            ruleList = new RuleList({
-                                name: transition.getName()
-                            });
-                            this.rules[transition.getName()] = ruleList;
-                        }
-
-                        ruleList.addTransition(transition);
-                        recentZone = false;
-                        recentZoneName = undefined;
-                    } else if (fields[0] === "Zone" || recentZone) {
-                        if (recentZone) {
-                            fields.splice(0, 1, "Zone", recentZoneName);
-                        }
-                        let zone = new Zone(fields);
-                        let zoneName = zone.getName();
-                        let zoneList = this.zones[zoneName];
-                        if (!zoneList) {
-                            zoneList = new ZoneList({
-                                name: zoneName,
-                                rules: this.rules
-                            });
-                            this.zones[zoneName] = zoneList;
-                        }
-
-                        zoneList.addZone(zone);
-                        recentZone = true;
-                        recentZoneName = zoneName;
-                    }
-                } else {
-                    recentZoneName = undefined;
+            if (fields.length > 1) {
+                if (fields[0] === "Rule") {
+                    this.transitions.push(new Transition(fields));
                     recentZone = false;
+                    recentZoneName = undefined;
+                } else if (fields[0] === "Zone" || recentZone) {
+                    if (recentZone) {
+                        fields.splice(0, 1, "Zone", recentZoneName);
+                    }
+                    const z = new RawZone(fields);
+                    this.zones.push(z);
+                    recentZone = true;
+                    recentZoneName = z.getName();
                 }
+            } else {
+                recentZoneName = undefined;
+                recentZone = false;
             }
         });
     }
 
-    getRules() {
-        return this.rules;
+    getTransitions() {
+        return this.transitions;
     }
 
-    getZones() {
+    getRawZones() {
         return this.zones;
     }
 };

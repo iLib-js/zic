@@ -21,10 +21,7 @@ const log4js = require("log4js");
 const logger = log4js.getLogger("zic.RawZone");
 
 export default class RawZone {
-    constructor(line) {
-        const cleanLine = line.replace(/#.*$/g, "");
-        const fields = cleanLine.split(/\s+/g);
-
+    constructor(fields) {
         logger.trace("fields are " + JSON.stringify(fields));
         this.name = fields[1];
         logger.debug("Found zone " + this.name);

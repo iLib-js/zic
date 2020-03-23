@@ -17,114 +17,20 @@
  * limitations under the License.
  */
 
+import RawZone from '../src/RawZone';
 import Zone from '../src/Zone';
 
 module.exports.testzone= {
     testConstructorSimple: test => {
         test.expect(5);
-        const z = new Zone("Zone America/St_Johns   -3:30 -      LMT     1884");
+        const rz = new RawZone();
+        const z = new Zone(rz);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "-3:30");
         test.equal(z.format, "LMT");
         test.equal(z.rule, "");
         test.equal(z.to, "1884");
-        test.done();
-    },
-
-    testConstructorOffsetWithSeconds: test => {
-        test.expect(5);
-        const z = new Zone("Zone America/St_Johns   -3:30:52 -      LMT     1884");
-        test.ok(typeof(z) !== "undefined");
-
-        test.equal(z.offset, "-3:30:52");
-        test.equal(z.format, "LMT");
-        test.equal(z.rule, "");
-        test.equal(z.to, "1884");
-        test.done();
-    },
-    
-    testConstructorPositiveOffset: test => {
-        test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 -      LMT     1915");
-        test.ok(typeof(z) !== "undefined");
-
-        test.equal(z.offset, "12:00");
-        test.equal(z.format, "LMT");
-        test.equal(z.rule, "");
-        test.equal(z.to, "1915");
-        test.done();
-    },
-
-    testConstructorRule: test => {
-        test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 Fiji      LMT     1915");
-        test.ok(typeof(z) !== "undefined");
-
-        test.equal(z.offset, "12:00");
-        test.equal(z.format, "LMT");
-        test.equal(z.rule, "Fiji");
-        test.equal(z.to, "1915");
-        test.done();
-    },
-
-    testConstructorOffsetWithSeconds: test => {
-        test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    11:55:44 -      LMT     1915");
-        test.ok(typeof(z) !== "undefined");
-
-        test.equal(z.offset, "11:55:44");
-        test.equal(z.format, "LMT");
-        test.equal(z.rule, "");
-        test.equal(z.to, "1915");
-        test.done();
-    },
-
-    testConstructorFullEndDate: test => {
-        test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26 ");
-        test.ok(typeof(z) !== "undefined");
-
-        test.equal(z.offset, "11:55:44");
-        test.equal(z.format, "LMT");
-        test.equal(z.rule, "");
-        test.equal(z.to, "1915 Oct 26");
-        test.done();
-    },
-
-    testConstructorNonLetterFormat: test => {
-        test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 Fiji      +12/+13     1915");
-        test.ok(typeof(z) !== "undefined");
-
-        test.equal(z.offset, "12:00");
-        test.equal(z.format, "+12/+13");
-        test.equal(z.rule, "Fiji");
-        test.equal(z.to, "1915");
-        test.done();
-    },
-
-    testConstructorIgnoreEverythingAfterTheCommentChar: test => {
-        test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 Fiji      LMT     1915 # Oct 26");
-        test.ok(typeof(z) !== "undefined");
-
-        test.equal(z.offset, "12:00");
-        test.equal(z.format, "LMT");
-        test.equal(z.rule, "Fiji");
-        test.equal(z.to, "1915");
-        test.done();
-    },
-
-    testConstructorNoEnd: test => {
-        test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 Fiji      +12/+13");
-        test.ok(typeof(z) !== "undefined");
-
-        test.equal(z.offset, "12:00");
-        test.equal(z.format, "+12/+13");
-        test.equal(z.rule, "Fiji");
-        test.equal(z.to, "present");
         test.done();
     },
 };

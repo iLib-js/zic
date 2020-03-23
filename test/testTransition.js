@@ -19,10 +19,16 @@
 
 import Transition from '../src/Transition';
 
+function split(line) {
+    const cleanLine = line.replace(/#.*$/g, "");
+    return cleanLine.split(/\s+/g);
+}
+
 module.exports.testtransition = {
     testConstructorSimple: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    1996    -       Mar     Sun>=9  3:00u   0       -");
+        const fields = split("Rule    Chile   1991    1996    -       Mar     Sun>=9  3:00u   0       -");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");
@@ -38,7 +44,8 @@ module.exports.testtransition = {
 
     testConstructorOneYearOnly: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    only    -       Mar     Sun>=9  3:00u   0       -");
+        const fields = split("Rule    Chile   1991    only    -       Mar     Sun>=9  3:00u   0       -");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");
@@ -54,7 +61,8 @@ module.exports.testtransition = {
 
     testConstructorOtherDaysOfTheWeek: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    1996    -       Mar     Fri>=9  3:00u   0       -");
+        const fields = split("Rule    Chile   1991    1996    -       Mar     Fri>=9  3:00u   0       -");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");
@@ -70,7 +78,8 @@ module.exports.testtransition = {
 
     testConstructorAlternateZoneChar: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    1996    -       Mar     8     3:00w   0       -");
+        const fields = split("Rule    Chile   1991    1996    -       Mar     8     3:00w   0       -");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");
@@ -86,7 +95,8 @@ module.exports.testtransition = {
 
     testConstructorAlternateZoneChar2: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    1996    -       Mar     Sun>=9  3:00s   0       S");
+        const fields = split("Rule    Chile   1991    1996    -       Mar     Sun>=9  3:00s   0       S");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");
@@ -102,7 +112,8 @@ module.exports.testtransition = {
 
     testConstructorNoZoneChar: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    1996    -       Mar     Sun>=9  3:00   0       -");
+        const fields = split("Rule    Chile   1991    1996    -       Mar     Sun>=9  3:00   0       -");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");
@@ -118,7 +129,8 @@ module.exports.testtransition = {
 
     testConstructorDifferentSavings: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    1996    -       Mar     Sun>=9  3:00u   2:00       -");
+        const fields = split("Rule    Chile   1991    1996    -       Mar     Sun>=9  3:00u   2:00       -");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");
@@ -134,7 +146,8 @@ module.exports.testtransition = {
 
     testConstructorLast: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    1996    -       Mar     lastSun  3:00u   0       -");
+        const fields = split("Rule    Chile   1991    1996    -       Mar     lastSun  3:00u   0       -");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");
@@ -150,7 +163,8 @@ module.exports.testtransition = {
 
     testConstructorFirst: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    1996    -       Mar     firstMon  3:00u   0       -");
+        const fields = split("Rule    Chile   1991    1996    -       Mar     firstMon  3:00u   0       -");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");
@@ -166,7 +180,8 @@ module.exports.testtransition = {
 
     testConstructorStartLate: test => {
         test.expect(9);
-        const t = new Transition("Rule    Chile   1991    1996    -       Mar     Sun>=9  23:00   0       -");
+        const fields = split("Rule    Chile   1991    1996    -       Mar     Sun>=9  23:00   0       -");
+        const t = new Transition(fields);
         test.ok(typeof(t) !== "undefined");
 
         test.equal(t.from, "1991");

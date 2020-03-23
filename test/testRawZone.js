@@ -19,10 +19,16 @@
 
 import RawZone from '../src/RawZone';
 
+function split(line) {
+    const cleanLine = line.replace(/#.*$/g, "");
+    return cleanLine.split(/\s+/g);
+}
+
 module.exports.testrawzone= {
     testConstructorSimple: test => {
         test.expect(5);
-        const z = new RawZone("RawZone America/St_Johns   -3:30 -      LMT     1884");
+        const fields = split("RawZone America/St_Johns   -3:30 -      LMT     1884");
+        const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "-3:30");
@@ -34,7 +40,8 @@ module.exports.testrawzone= {
 
     testConstructorOffsetWithSeconds: test => {
         test.expect(5);
-        const z = new RawZone("RawZone America/St_Johns   -3:30:52 -      LMT     1884");
+        const fields = split("RawZone America/St_Johns   -3:30:52 -      LMT     1884");
+        const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "-3:30:52");
@@ -46,7 +53,8 @@ module.exports.testrawzone= {
     
     testConstructorPositiveOffset: test => {
         test.expect(5);
-        const z = new RawZone("RawZone    Pacific/Fiji    12:00 -      LMT     1915");
+        const fields = split("RawZone    Pacific/Fiji    12:00 -      LMT     1915");
+        const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");
@@ -58,7 +66,8 @@ module.exports.testrawzone= {
 
     testConstructorRule: test => {
         test.expect(5);
-        const z = new RawZone("RawZone    Pacific/Fiji    12:00 Fiji      LMT     1915");
+        const fields = split("RawZone    Pacific/Fiji    12:00 Fiji      LMT     1915");
+        const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");
@@ -70,7 +79,8 @@ module.exports.testrawzone= {
 
     testConstructorOffsetWithSeconds: test => {
         test.expect(5);
-        const z = new RawZone("RawZone    Pacific/Fiji    11:55:44 -      LMT     1915");
+        const fields = split("RawZone    Pacific/Fiji    11:55:44 -      LMT     1915");
+        const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "11:55:44");
@@ -82,7 +92,8 @@ module.exports.testrawzone= {
 
     testConstructorFullEndDate: test => {
         test.expect(5);
-        const z = new RawZone("RawZone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26 ");
+        const fields = split("RawZone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26 ");
+        const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "11:55:44");
@@ -94,7 +105,8 @@ module.exports.testrawzone= {
 
     testConstructorNonLetterFormat: test => {
         test.expect(5);
-        const z = new RawZone("RawZone    Pacific/Fiji    12:00 Fiji      +12/+13     1915");
+        const fields = split("RawZone    Pacific/Fiji    12:00 Fiji      +12/+13     1915");
+        const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");
@@ -106,7 +118,8 @@ module.exports.testrawzone= {
 
     testConstructorIgnoreEverythingAfterTheCommentChar: test => {
         test.expect(5);
-        const z = new RawZone("RawZone    Pacific/Fiji    12:00 Fiji      LMT     1915 # Oct 26");
+        const fields = split("RawZone    Pacific/Fiji    12:00 Fiji      LMT     1915 # Oct 26");
+        const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");
@@ -118,7 +131,8 @@ module.exports.testrawzone= {
 
     testConstructorNoEnd: test => {
         test.expect(5);
-        const z = new RawZone("RawZone    Pacific/Fiji    12:00 Fiji      +12/+13");
+        const fields = split("RawZone    Pacific/Fiji    12:00 Fiji      +12/+13");
+        const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");

@@ -79,9 +79,7 @@ function convertRule(transition) {
 }
 
 class Transition {
-    constructor(line) {
-        const fields = line.split(/\s+/g);
-
+    constructor(fields) {
         logger.trace("fields are " + JSON.stringify(fields));
         this.name = fields[1];
         logger.debug("Found transition " + this.name);
