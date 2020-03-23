@@ -18,6 +18,7 @@
  */
 
 export default [
+    "testTransition.js",
     "testZone.js",
     "testRule.js"
 ];

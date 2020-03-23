@@ -32,6 +32,5 @@ export default class Zone {
     }
 
     toJson() {
-
     }
 }

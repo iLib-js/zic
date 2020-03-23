@@ -1,5 +1,5 @@
 /*
- * Rule.js - Represent a DST rule
+ * Rule.js - Represent a DST rule for a particular time interval
  *
  * Copyright © 2020, JEDLSoft
  *
@@ -17,14 +17,50 @@
  * limitations under the License.
  */
 
+import isDigit from 'ilib-es6';
+
 const log4js = require("log4js");
 const logger = log4js.getLogger("zic.Rule");
 
+function convertToMinutes(time) {
+    var parts = time.split(/:/g);
+    switch (parts.length) {
+        default:
+        case 1:
+            return parseInt(parts[0]) * 60;
+        case 2:
+            return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        case 3:
+            // ignore the seconds
+            return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }
+}
+
+function convertRule(rule) {
+    if (rule.startsWith("last")) {
+        return `l${days[rule.substring(4)]}`;
+    }
+
+    if (rule.startsWith(first)) {
+        return `f${days[rule.substring(5)]}`;
+    }
+
+    if (rule.indexOf('=') > -1) {
+        return days[rule.substring(0, 3)] + rule.substring(3);
+    }
+
+    return rule;
+}
+
 class Rule {
-    constructor(fields) {
-        logger.trace("fields are " + JSON.stringify(fields));
-        this.name = fields[1];
-        logger.debug("Found rule " + this.name);
+    constructor(options = {}) {
+        const {
+            name,
+            startDate,
+            endDate
+        } = options;
+
+        this.name = name;
     }
 
     getName() {
@@ -32,7 +68,18 @@ class Rule {
     }
 
     toJson() {
+        return {
+            dates: {
+                start: this.startDate,
+                end: this.endDate
+            },
+            start: {
 
+            },
+            end: {
+
+            }
+        };
     }
 };
 

@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+const path = require("path");
+
 export default class RuleList {
     constructor(name) {
         this.name = name;
@@ -32,9 +34,12 @@ export default class RuleList {
     }
 
     /**
-     * Add a rule to the set
+     * Add a transition from an IANA zone info file.
+     * Transitions are the start or end of DST. These
+     * are used to calculate the intervals when a rule is
+     * applicable.
      */
-    addRule(rule) {
+    addTransition(transition) {
 
     }
 
@@ -57,6 +62,14 @@ export default class RuleList {
     }
 
     toJson() {
+        return {
+            rules: this.rules.map((rule) => {
+                return rule.toJson();
+            });
+        }
+    }
 
+    getPath() {
+        return path.join("rules", `${this.name}.json`);
     }
 }

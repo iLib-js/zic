@@ -54,6 +54,14 @@ export default class ZoneList {
     }
 
     toJson() {
+        return {
+            zones: this.zones.map(zone => {
+                return zone.toJson();
+            });
+        }
+    }
 
+    getPath() {
+        return `${this.name}.json`;
     }
 }

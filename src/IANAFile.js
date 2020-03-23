@@ -18,7 +18,7 @@
  */
 
 import RuleList from './RuleList';
-import Rule from './Rule';
+import Transition from './Transition';
 
 import ZoneList from './ZoneList';
 import Zone from './Zone';
@@ -41,17 +41,17 @@ class IANAFile {
 
                 if (fields.length > 1) {
                     if (fields[0] === "Rule") {
-                        let rule = new Rule(fields);
+                        let transition = new Transition(fields);
 
-                        let ruleList = this.rules[rule.getName()];
+                        let ruleList = this.rules[transition.getName()];
                         if (!ruleList) {
                             ruleList = new RuleList({
-                                name: rule.getName()
+                                name: transition.getName()
                             });
-                            this.rules[rule.getName()] = ruleList;
+                            this.rules[transition.getName()] = ruleList;
                         }
 
-                        ruleList.addRule(rule);
+                        ruleList.addTransition(transition);
                         recentZone = false;
                         recentZoneName = undefined;
                     } else if (fields[0] === "Zone" || recentZone) {
