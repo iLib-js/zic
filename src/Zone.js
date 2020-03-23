@@ -21,14 +21,18 @@ const log4js = require("log4js");
 const logger = log4js.getLogger("zic.Zone");
 
 export default class Zone {
-    constructor(fields) {
-        logger.trace("fields are " + JSON.stringify(fields));
-        this.name = fields[1];
-        logger.debug("Found zone " + this.name);
-    }
+    constructor(rawZone, previousRawZone) {
+        Object.copy(this, rawZone);
+        
+        this.from = previousRawZone.to;
+     }
 
     getName() {
         return this.name;
+    }
+
+    getPath() {
+        
     }
 
     toJson() {

@@ -19,6 +19,7 @@
 
 export default [
     "testTransition.js",
+    "testRawZone.js",
     "testZone.js",
     "testRule.js"
 ];

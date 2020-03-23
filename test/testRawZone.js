@@ -1,5 +1,5 @@
 /*
- * testZone.js - test the zone object
+ * testRawZone.js - test the raw zone object
  *
  * Copyright © 2020, JEDLSoft
  *
@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import Zone from '../src/Zone';
+import RawZone from '../src/RawZone';
 
-module.exports.testzone= {
+module.exports.testrawzone= {
     testConstructorSimple: test => {
         test.expect(5);
-        const z = new Zone("Zone America/St_Johns   -3:30 -      LMT     1884");
+        const z = new RawZone("RawZone America/St_Johns   -3:30 -      LMT     1884");
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "-3:30");
@@ -34,7 +34,7 @@ module.exports.testzone= {
 
     testConstructorOffsetWithSeconds: test => {
         test.expect(5);
-        const z = new Zone("Zone America/St_Johns   -3:30:52 -      LMT     1884");
+        const z = new RawZone("RawZone America/St_Johns   -3:30:52 -      LMT     1884");
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "-3:30:52");
@@ -46,7 +46,7 @@ module.exports.testzone= {
     
     testConstructorPositiveOffset: test => {
         test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 -      LMT     1915");
+        const z = new RawZone("RawZone    Pacific/Fiji    12:00 -      LMT     1915");
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");
@@ -58,7 +58,7 @@ module.exports.testzone= {
 
     testConstructorRule: test => {
         test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 Fiji      LMT     1915");
+        const z = new RawZone("RawZone    Pacific/Fiji    12:00 Fiji      LMT     1915");
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");
@@ -70,7 +70,7 @@ module.exports.testzone= {
 
     testConstructorOffsetWithSeconds: test => {
         test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    11:55:44 -      LMT     1915");
+        const z = new RawZone("RawZone    Pacific/Fiji    11:55:44 -      LMT     1915");
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "11:55:44");
@@ -82,7 +82,7 @@ module.exports.testzone= {
 
     testConstructorFullEndDate: test => {
         test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26 ");
+        const z = new RawZone("RawZone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26 ");
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "11:55:44");
@@ -94,7 +94,7 @@ module.exports.testzone= {
 
     testConstructorNonLetterFormat: test => {
         test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 Fiji      +12/+13     1915");
+        const z = new RawZone("RawZone    Pacific/Fiji    12:00 Fiji      +12/+13     1915");
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");
@@ -106,7 +106,7 @@ module.exports.testzone= {
 
     testConstructorIgnoreEverythingAfterTheCommentChar: test => {
         test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 Fiji      LMT     1915 # Oct 26");
+        const z = new RawZone("RawZone    Pacific/Fiji    12:00 Fiji      LMT     1915 # Oct 26");
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");
@@ -118,7 +118,7 @@ module.exports.testzone= {
 
     testConstructorNoEnd: test => {
         test.expect(5);
-        const z = new Zone("Zone    Pacific/Fiji    12:00 Fiji      +12/+13");
+        const z = new RawZone("RawZone    Pacific/Fiji    12:00 Fiji      +12/+13");
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "12:00");
