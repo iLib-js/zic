@@ -56,7 +56,7 @@ class IANAFile {
                     recentZone = true;
                     recentZoneName = z.getName();
                 }
-            } else {
+            } else if (line.length === 0) {
                 recentZoneName = undefined;
                 recentZone = false;
             }
