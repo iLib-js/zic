@@ -19,9 +19,20 @@
 
 const path = require("path");
 
+function compareTransitions(left, right) {
+    let result = left.startYear - right.startYear;
+    if (result === 0) {
+        result = left.endYear - right.endYear;
+    }
+    return result;
+}
+
+
 export default class RuleList {
     constructor(name) {
         this.name = name;
+        this.transitions = [];
+
         this.rules = [];
     }
 
@@ -40,7 +51,50 @@ export default class RuleList {
      * applicable.
      */
     addTransition(transition) {
+        transition.startYear = (transition.from === "min") ? 0 : parseInt(transition.from);
+        transition.endYear = (transition.to === "max") ? Number.MAX_SAFE_INTEGER : parseInt(transition.to);
+        transition.savingsMinutes = convertToMinutes(transition.savings);
+        this.transitions.push(transition);
+    }
 
+    processRules() {
+        this.transitions.sort(compareTransitions);
+
+        let starts = [];
+        let ends = [];
+        this.transitions.forEach(transition => {
+            if (transition.savingsMinutes) {
+                starts.push(transition);
+            } else {
+                ends.push(transition);
+            }
+        });
+
+        let i = 0, j = 0;
+        while (i < starts.length && j < ends.length) {
+            const startDate = Math.max(starts[i].startYear, ends[j].startYear);
+            const endDate = Main.min(start[i].endYear, ends[j].endYear);
+
+            this.rules.push(new Rule({
+                from: startDate,
+                to: endDate,
+                start: starts[i],
+                end: ends[j]
+            }));
+
+            if (start[i].endYear < ends[j].endYear) {
+                i++;
+            } else if (start[i].endYear > ends[j].endYear) {
+                j++;
+            } else {
+                i++;
+                j++;
+            }
+        }
+    }
+
+    getRules() {
+        return this.rules;
     }
 
     /**
@@ -65,7 +119,7 @@ export default class RuleList {
         return {
             rules: this.rules.map((rule) => {
                 return rule.toJson();
-            });
+            })
         }
     }
 

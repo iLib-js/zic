@@ -57,7 +57,7 @@ export default class ZoneList {
         return {
             zones: this.zones.map(zone => {
                 return zone.toJson();
-            });
+            })
         }
     }
 

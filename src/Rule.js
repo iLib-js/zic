@@ -22,63 +22,61 @@ import isDigit from 'ilib-es6';
 const log4js = require("log4js");
 const logger = log4js.getLogger("zic.Rule");
 
-function convertToMinutes(time) {
-    var parts = time.split(/:/g);
-    switch (parts.length) {
-        default:
-        case 1:
-            return parseInt(parts[0]) * 60;
-        case 2:
-            return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-        case 3:
-            // ignore the seconds
-            return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-    }
-}
-
-function convertRule(rule) {
-    if (rule.startsWith("last")) {
-        return `l${days[rule.substring(4)]}`;
-    }
-
-    if (rule.startsWith(first)) {
-        return `f${days[rule.substring(5)]}`;
-    }
-
-    if (rule.indexOf('=') > -1) {
-        return days[rule.substring(0, 3)] + rule.substring(3);
-    }
-
-    return rule;
-}
-
 class Rule {
     constructor(options = {}) {
         const {
             name,
-            startDate,
-            endDate
+            from,
+            to,
+            start,
+            end
         } = options;
 
         this.name = name;
+        this.from = from;
+        this.to = to;
+        if (start) {
+            this.start = {
+                month: start.month,
+                rule: start.rule,
+                time: start.time,
+                zoneChar: start.zoneChar,
+                savings: start.savings,
+                abbreviation: start.abbreviation,
+                timeInMinutes: start.timeInMinutes,
+                savingsInMinutes: start.savingsInMinutes
+            }
+        }
+        if (end) {
+            this.end = {
+                month: end.month,
+                rule: end.rule,
+                time: end.time,
+                zoneChar: end.zoneChar,
+                savings: end.savings,
+                abbreviation: end.abbreviation,
+                timeInMinutes: end.timeInMinutes,
+                savingsInMinutes: end.savingsInMinutes
+            }
+        }
     }
 
     getName() {
         return this.name;
     }
 
+    isApplicable(date) {
+
+    }
+
     toJson() {
         return {
             dates: {
-                start: this.startDate,
-                end: this.endDate
+                start: this.dateStart,
+                end: this.dateEnd
             },
-            start: {
-
-            },
-            end: {
-
-            }
+            start: this.start,
+            end: this.end
         };
     }
 };
