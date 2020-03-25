@@ -25,7 +25,7 @@ export default class RawZone {
         logger.trace("fields are " + JSON.stringify(fields));
         this.name = fields[1];
         logger.debug("Found zone " + this.name);
-        
+
         this.offset = fields[2];
         this.rule = fields[3] === '-' ? "" : fields[3];
         this.format = fields[4];
@@ -46,8 +46,5 @@ export default class RawZone {
 
     getName() {
         return this.name;
-    }
-
-    toJson() {
     }
 }

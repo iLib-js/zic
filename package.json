@@ -51,7 +51,7 @@
     "dependencies": {
         "ilib-es6": "^14.4.0",
         "log4js": "^6.1.2",
-        "pretty-data": "^0.40.0",
+        "mkdirp": "^1.0.3",
         "promise": "^8.1.0"
     },
     "devDependencies": {

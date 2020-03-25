@@ -40,8 +40,8 @@ export default class ZoneList {
     /**
      * Add a Zone to the set
      */
-    addZone(zone) {
-
+    addRawZone(zone) {
+        this.zones.push(zone);
     }
 
     /**

@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { convertToMinutes } from './utils';
+
 const path = require("path");
 
 function compareTransitions(left, right) {
@@ -34,6 +36,7 @@ export default class RuleList {
         this.transitions = [];
 
         this.rules = [];
+        this.rulesProcessed = false;
     }
 
     /**
@@ -54,10 +57,15 @@ export default class RuleList {
         transition.startYear = (transition.from === "min") ? 0 : parseInt(transition.from);
         transition.endYear = (transition.to === "max") ? Number.MAX_SAFE_INTEGER : parseInt(transition.to);
         transition.savingsMinutes = convertToMinutes(transition.savings);
+        this.rulesProcessed = false;
         this.transitions.push(transition);
     }
 
     processRules() {
+        if (this.rulesProcessed) {
+            return;
+        }
+
         this.transitions.sort(compareTransitions);
 
         let starts = [];
@@ -69,6 +77,8 @@ export default class RuleList {
                 ends.push(transition);
             }
         });
+
+        this.rules = [];
 
         let i = 0, j = 0;
         while (i < starts.length && j < ends.length) {
@@ -91,9 +101,12 @@ export default class RuleList {
                 j++;
             }
         }
+        
+        this.rulesProcessed = true;
     }
 
     getRules() {
+        this.processRules();
         return this.rules;
     }
 

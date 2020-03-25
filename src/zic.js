@@ -20,6 +20,8 @@
  * This code is intended to be run under node.js
  */
 import IANAFile from './IANAFile';
+import ZoneSet from './ZoneSet';
+import mkdirp from 'mkdirp';
 
 const fs = require('fs');
 const path = require('path');
@@ -108,23 +110,36 @@ export default (argv) => {
     logger.info(getVersion());
     logger.info("Convert IANA tzdata files to json.\n");
 
-    let rules = {};
-    let zones = {};
+    const zoneSet = new ZoneSet();
 
     // find all the files first
     ["africa", "antarctica", "asia", "australasia", "europe", "northamerica", "southamerica"].forEach(fileName => {
         let file = new IANAFile(path.join(settings.sourceDir, fileName));
 
-        rules = {
-            ...rules,
-            ...file.getRules()
-        };
-
-        zones = {
-            ...zones,
-            ...file.getZones()
-        };
+        zoneSet.addTransitions(file.getTransitions());
+        zoneSet.addRawZones(file.getRawZones());
     });
+
+    const ruleLists = zoneSet.getRuleLists();
+    const zoneLists = zoneSet.getZoneLists();
+
+    for (let listName in ruleLists) {
+        const list = ruleLists[listName];
+        const filePath = path.join(settings.targetDir, list.getPath());
+        const parent = path.dirname(filePath);
+        mkdirp.sync(parent);
+        logger.info(`${filePath} ...`);
+        // fs.writeFileSync(filePath, list.toJson, 4);
+    }
+
+    for (let listName in zoneLists) {
+        const list = zoneLists[listName];
+        const filePath = path.join(settings.targetDir, list.getPath());
+        const parent = path.dirname(filePath);
+        mkdirp.sync(parent);
+        logger.info(`${filePath} ...`);
+        // fs.writeFileSync(filePath, list.toJson, 4);
+    }
 
     logger.info("Done");
     log4js.shutdown(function() {
