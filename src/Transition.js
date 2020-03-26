@@ -81,51 +81,56 @@ function convertRule(transition) {
 class Transition {
     constructor(fields) {
         logger.trace("fields are " + JSON.stringify(fields));
-        this.name = fields[1];
-        logger.debug("Found transition " + this.name);
+        if (!fields) return;
+        if (Array.isArray(fields)) {
+            this.name = fields[1];
+            logger.debug("Found transition " + this.name);
 
-        this.from = fields[2];
-        this.to = fields[3];
-        if (this.to === "only") {
-            this.to = this.from;
-        }
-        this.month = months[fields[5]];
-        this.rule = convertRule(fields[6]);
-        this.time = fields[7];
-        this.zoneChar = 'w';
-        let lastChar = this.time[this.time.length - 1];
-        if (!isDigit(lastChar)) {
-            switch (lastChar) {
-                case 's':
-                case 'S':
-                    // standard time -> offset without the savings time
-                    // for start Transitions, this is the same as wall time
-                    // for end Transitions, this is wall time - savings time
-                    this.zoneChar = 's';
-                    break;
-                case 'u':
-                case 'U':
-                case 'g':
-                case 'G':
-                case 'z':
-                case 'Z':
-                    // UTC
-                    this.zoneChar = 'u';
-                    break;
-                case 'w':
-                case 'W':
-                default:
-                    // Wall time
-                    this.zoneChar = 'w';
-                break;
+            this.from = fields[2];
+            this.to = fields[3];
+            if (this.to === "only") {
+                this.to = this.from;
             }
-            this.time = this.time.substring(0, this.time.length - 1);
-            logger.debug("found zone char " + this.zoneChar);
+            this.month = months[fields[5]];
+            this.rule = convertRule(fields[6]);
+            this.time = fields[7];
+            this.zoneChar = 'w';
+            let lastChar = this.time[this.time.length - 1];
+            if (!isDigit(lastChar)) {
+                switch (lastChar) {
+                    case 's':
+                    case 'S':
+                        // standard time -> offset without the savings time
+                        // for start Transitions, this is the same as wall time
+                        // for end Transitions, this is wall time - savings time
+                        this.zoneChar = 's';
+                        break;
+                    case 'u':
+                    case 'U':
+                    case 'g':
+                    case 'G':
+                    case 'z':
+                    case 'Z':
+                        // UTC
+                        this.zoneChar = 'u';
+                        break;
+                    case 'w':
+                    case 'W':
+                    default:
+                        // Wall time
+                        this.zoneChar = 'w';
+                    break;
+                }
+                this.time = this.time.substring(0, this.time.length - 1);
+                logger.debug("found zone char " + this.zoneChar);
+            }
+            this.timeInMinutes = convertToMinutes(this.time);
+            this.savings = fields[8];
+            this.savingsInMinutes = convertToMinutes(this.savings);
+            this.abbreviation = fields[9] === '-' ? "" : fields[9];
+        } else {
+            Object.assign(this, fields);
         }
-        this.timeInMinutes = convertToMinutes(this.time);
-        this.savings = fields[8];
-        this.savingsInMinutes = convertToMinutes(this.savings);
-        this.abbreviation = fields[9] === '-' ? "" : fields[9];
     }
 
     getName() {

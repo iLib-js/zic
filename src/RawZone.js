@@ -22,25 +22,31 @@ const logger = log4js.getLogger("zic.RawZone");
 
 export default class RawZone {
     constructor(fields) {
-        logger.trace("fields are " + JSON.stringify(fields));
-        this.name = fields[1];
-        logger.debug("Found zone " + this.name);
+        if (!fields) return;
 
-        this.offset = fields[2];
-        this.rule = fields[3] === '-' ? "" : fields[3];
-        this.format = fields[4];
-        if (fields.length < 6) {
-            this.to = "present";
+        if (Array.isArray(fields)) {
+            logger.trace("fields are " + JSON.stringify(fields));
+            this.name = fields[1];
+            logger.debug("Found zone " + this.name);
+
+            this.offset = fields[2];
+            this.rule = fields[3] === '-' ? "" : fields[3];
+            this.format = fields[4];
+            if (fields.length < 6) {
+                this.to = "present";
+            } else {
+                this.to = fields[5]; // year
+                if (fields[6]) {
+                    // month
+                    this.to += " " + fields[6];
+                }
+                if (fields[7]) {
+                    // day
+                    this.to += " " + fields[7];
+                }
+            }
         } else {
-            this.to = fields[5]; // year
-            if (fields[6]) {
-                // month
-                this.to += " " + fields[6];
-            }
-            if (fields[7]) {
-                // day
-                this.to += " " + fields[7];
-            }
+            Object.assign(this, fields);
         }
     }
 

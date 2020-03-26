@@ -21,9 +21,9 @@ const log4js = require("log4js");
 const logger = log4js.getLogger("zic.Zone");
 
 export default class Zone {
-    constructor(rawZone, previousRawZone) {
-        Object.copy(this, rawZone);
-        
+    constructor(rawZone = {}, previousRawZone = {}) {
+        Object.assign(this, rawZone);
+
         this.from = previousRawZone.to;
      }
 
@@ -32,7 +32,7 @@ export default class Zone {
     }
 
     getPath() {
-        
+
     }
 
     toJson() {

@@ -21,6 +21,7 @@ export default [
     "testTransition.js",
     "testRawZone.js",
     "testRule.js",
-    "testIANAFile.js"
-//    "testZone.js",
+    "testIANAFile.js",
+    "testZone.js",
+    "testZoneSet.js"
 ];

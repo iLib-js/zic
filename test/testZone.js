@@ -23,8 +23,12 @@ import Zone from '../src/Zone';
 module.exports.testzone= {
     testConstructorSimple: test => {
         test.expect(5);
-        const rz = new RawZone();
-        const z = new Zone(rz);
+        const z = new Zone({
+            offset: "-3:30",
+            format: "LMT",
+            rule: "",
+            to: "1884"
+        });
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "-3:30");
