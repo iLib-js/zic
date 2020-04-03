@@ -124,13 +124,13 @@ class Transition {
                 this.time = this.time.substring(0, this.time.length - 1);
                 logger.debug("found zone char " + this.zoneChar);
             }
-            this.timeInMinutes = convertToMinutes(this.time);
             this.savings = fields[8];
-            this.savingsInMinutes = convertToMinutes(this.savings);
             this.abbreviation = fields[9] === '-' ? "" : fields[9];
         } else {
             Object.assign(this, fields);
         }
+        this.timeInMinutes = convertToMinutes(this.time);
+        this.savingsInMinutes = convertToMinutes(this.savings);
     }
 
     getName() {

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import Rule from './Rule';
 import { convertToMinutes } from './utils';
 
 const path = require("path");
@@ -56,7 +57,6 @@ export default class RuleList {
     addTransition(transition) {
         transition.startYear = (transition.from === "min") ? 0 : parseInt(transition.from);
         transition.endYear = (transition.to === "max") ? Number.MAX_SAFE_INTEGER : parseInt(transition.to);
-        transition.savingsMinutes = convertToMinutes(transition.savings);
         this.rulesProcessed = false;
         this.transitions.push(transition);
     }
@@ -71,7 +71,7 @@ export default class RuleList {
         let starts = [];
         let ends = [];
         this.transitions.forEach(transition => {
-            if (transition.savingsMinutes) {
+            if (transition.savingsInMinutes) {
                 starts.push(transition);
             } else {
                 ends.push(transition);
@@ -83,18 +83,19 @@ export default class RuleList {
         let i = 0, j = 0;
         while (i < starts.length && j < ends.length) {
             const startDate = Math.max(starts[i].startYear, ends[j].startYear);
-            const endDate = Main.min(start[i].endYear, ends[j].endYear);
+            const endDate = Math.min(starts[i].endYear, ends[j].endYear);
 
             this.rules.push(new Rule({
+                name: starts[i].name,
                 from: startDate,
                 to: endDate,
                 start: starts[i],
                 end: ends[j]
             }));
 
-            if (start[i].endYear < ends[j].endYear) {
+            if (starts[i].endYear < ends[j].endYear) {
                 i++;
-            } else if (start[i].endYear > ends[j].endYear) {
+            } else if (starts[i].endYear > ends[j].endYear) {
                 j++;
             } else {
                 i++;
