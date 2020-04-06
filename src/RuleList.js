@@ -102,7 +102,35 @@ export default class RuleList {
                 j++;
             }
         }
-        
+
+        // orphan start[s]
+        while (i < starts.length) {
+            const startDate = Math.max(starts[i].startYear, ends[j-1].endYear+1);
+            const endDate = starts[i].endYear;
+
+            this.rules.push(new Rule({
+                name: starts[i].name,
+                from: startDate,
+                to: endDate,
+                start: starts[i],
+            }));
+            i++;
+        }
+
+        // orphan end[s]
+        while (j < ends.length) {
+            const startDate = Math.max(starts[i-1].endYear+1, ends[j].startYear);
+            const endDate = ends[j].endYear;
+
+            this.rules.push(new Rule({
+                name: ends[j].name,
+                from: startDate,
+                to: endDate,
+                end: ends[j],
+            }));
+            j++;
+        }
+
         this.rulesProcessed = true;
     }
 

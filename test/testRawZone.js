@@ -90,16 +90,59 @@ module.exports.testrawzone= {
         test.done();
     },
 
-    testConstructorFullEndDate: test => {
-        test.expect(5);
-        const fields = split("Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26 ");
+    testConstructorNoEndDate: test => {
+        test.expect(6);
+        const fields = split("Zone    Pacific/Fiji    11:55 -      LMT");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
-        test.equal(z.offset, "11:55:44");
+        test.equal(z.offset, "11:55");
+        test.equal(z.format, "LMT");
+        test.equal(z.rule, "");
+        test.equal(z.to, "present");
+        test.ok(!z.time);
+        test.done();
+    },
+
+    testConstructorYearMonthEndDate: test => {
+        test.expect(6);
+        const fields = split("Zone    Pacific/Fiji    11:55 -      LMT     1915 Oct");
+        const z = new RawZone(fields);
+        test.ok(typeof(z) !== "undefined");
+
+        test.equal(z.offset, "11:55");
+        test.equal(z.format, "LMT");
+        test.equal(z.rule, "");
+        test.equal(z.to, "1915 Oct");
+        test.ok(!z.time);
+        test.done();
+    },
+
+    testConstructorFullEndDate: test => {
+        test.expect(6);
+        const fields = split("Zone    Pacific/Fiji    11:55 -      LMT     1915 Oct 26 ");
+        const z = new RawZone(fields);
+        test.ok(typeof(z) !== "undefined");
+
+        test.equal(z.offset, "11:55");
         test.equal(z.format, "LMT");
         test.equal(z.rule, "");
         test.equal(z.to, "1915 Oct 26");
+        test.ok(!z.time);
+        test.done();
+    },
+
+    testConstructorFullEndDateTime: test => {
+        test.expect(6);
+        const fields = split("Zone    Pacific/Fiji    11:55 -      LMT     1915 Oct 26   2:00");
+        const z = new RawZone(fields);
+        test.ok(typeof(z) !== "undefined");
+
+        test.equal(z.offset, "11:55");
+        test.equal(z.format, "LMT");
+        test.equal(z.rule, "");
+        test.equal(z.to, "1915 Oct 26");
+        test.equal(z.time, "2:00");
         test.done();
     },
 

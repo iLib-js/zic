@@ -44,6 +44,11 @@ export default class RawZone {
                     // day
                     this.to += " " + fields[7];
                 }
+
+                if (fields[8]) {
+                    // time of day
+                    this.time = fields[8];
+                }
             }
         } else {
             Object.assign(this, fields);
