@@ -65,35 +65,39 @@ export default class ZoneSet {
      * @param {RawZone} rawZone the zone to add
      */
     addRawZone(rawZone) {
-        const name = rawZone.getName();
+        const name = rawZone.getName() || this.lastZoneName;
         let list = this.zones[name];
         if (!list) {
-            list = new ZoneList(name);
+            list = new ZoneList({
+                name,
+                rules: this.rules
+            });
             this.zones[name] = list;
         }
         list.addRawZone(rawZone);
+        this.lastZoneName = name;
     }
-    
+
     /**
      * Add an array of raw zones from an IANA zone info file.
      * @param {Array<RawZone>} rawZones the zones to add
      */
     addRawZones(rawZones) {
-        if (!rawZones) return;
+        if (!rawZones || !rawZones.length) return;
         rawZones.forEach(rawZone => {
             this.addRawZone(rawZone);
         });
     }
 
     /**
-     * 
+     *
      */
     getRuleLists() {
         return this.rules;
     }
-    
+
     /**
-     * 
+     *
      */
     getZoneLists() {
         return this.zones;

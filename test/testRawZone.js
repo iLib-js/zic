@@ -26,7 +26,7 @@ function split(line) {
 
 module.exports.testrawzone= {
     testConstructorSimple: test => {
-        test.expect(5);
+        test.expect(6);
         const fields = split("Zone America/St_Johns   -3:30 -      LMT     1884");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
@@ -35,6 +35,7 @@ module.exports.testrawzone= {
         test.equal(z.format, "LMT");
         test.equal(z.rule, "");
         test.equal(z.to, "1884");
+        test.equal(z.toDate, Date.UTC(1883, 11, 31, 23, 59, 59));
         test.done();
     },
 
@@ -50,7 +51,7 @@ module.exports.testrawzone= {
         test.equal(z.to, "1884");
         test.done();
     },
-    
+
     testConstructorPositiveOffset: test => {
         test.expect(5);
         const fields = split("Zone    Pacific/Fiji    12:00 -      LMT     1915");
@@ -91,7 +92,7 @@ module.exports.testrawzone= {
     },
 
     testConstructorNoEndDate: test => {
-        test.expect(6);
+        test.expect(7);
         const fields = split("Zone    Pacific/Fiji    11:55 -      LMT");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
@@ -101,11 +102,13 @@ module.exports.testrawzone= {
         test.equal(z.rule, "");
         test.equal(z.to, "present");
         test.ok(!z.time);
+        test.ok(z.toDate > (new Date()).valueOf() - 1000);
+
         test.done();
     },
 
     testConstructorYearMonthEndDate: test => {
-        test.expect(6);
+        test.expect(7);
         const fields = split("Zone    Pacific/Fiji    11:55 -      LMT     1915 Oct");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
@@ -115,11 +118,13 @@ module.exports.testrawzone= {
         test.equal(z.rule, "");
         test.equal(z.to, "1915 Oct");
         test.ok(!z.time);
+        test.equal(z.toDate, Date.UTC(1915, 9, 31, 23, 59, 59));
+
         test.done();
     },
 
     testConstructorFullEndDate: test => {
-        test.expect(6);
+        test.expect(7);
         const fields = split("Zone    Pacific/Fiji    11:55 -      LMT     1915 Oct 26 ");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
@@ -129,11 +134,12 @@ module.exports.testrawzone= {
         test.equal(z.rule, "");
         test.equal(z.to, "1915 Oct 26");
         test.ok(!z.time);
+        test.equal(z.toDate, Date.UTC(1915, 9, 26, 23, 59, 59));
         test.done();
     },
 
     testConstructorFullEndDateTime: test => {
-        test.expect(6);
+        test.expect(7);
         const fields = split("Zone    Pacific/Fiji    11:55 -      LMT     1915 Oct 26   2:00");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
@@ -141,13 +147,14 @@ module.exports.testrawzone= {
         test.equal(z.offset, "11:55");
         test.equal(z.format, "LMT");
         test.equal(z.rule, "");
-        test.equal(z.to, "1915 Oct 26");
+        test.equal(z.to, "1915 Oct 26 2:00");
         test.equal(z.time, "2:00");
+        test.equal(z.toDate, Date.UTC(1915, 9, 26, 2, 0, 0));
         test.done();
     },
 
     testConstructorNonLetterFormat: test => {
-        test.expect(5);
+        test.expect(6);
         const fields = split("Zone    Pacific/Fiji    12:00 Fiji      +12/+13     1915");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
@@ -156,11 +163,12 @@ module.exports.testrawzone= {
         test.equal(z.format, "+12/+13");
         test.equal(z.rule, "Fiji");
         test.equal(z.to, "1915");
+        test.equal(z.toDate, Date.UTC(1914, 11, 31, 23, 59, 59));
         test.done();
     },
 
     testConstructorIgnoreEverythingAfterTheCommentChar: test => {
-        test.expect(5);
+        test.expect(6);
         const fields = split("Zone    Pacific/Fiji    12:00 Fiji      LMT     1915 # Oct 26");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
@@ -169,6 +177,7 @@ module.exports.testrawzone= {
         test.equal(z.format, "LMT");
         test.equal(z.rule, "Fiji");
         test.equal(z.to, "1915");
+        test.equal(z.toDate, Date.UTC(1914, 11, 31, 23, 59, 59));
         test.done();
     },
 

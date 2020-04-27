@@ -21,10 +21,21 @@ const log4js = require("log4js");
 const logger = log4js.getLogger("zic.Zone");
 
 export default class Zone {
-    constructor(rawZone = {}, previousRawZone = {}) {
+    constructor(rawZone = {}, previousRawZone = {}, rules = {}) {
         Object.assign(this, rawZone);
 
-        this.from = previousRawZone.to;
+        // time zones were first used in 1883
+        this.from = previousRawZone.to || "1883";
+        this.fromDate = previousRawZone.toDate || Date.UTC(1883, 0, 1);
+        this.toDate = rawZone.toDate - 1000;
+
+        if (!this.name && previousRawZone.name) {
+            this.name = previousRawZone.name;
+        }
+
+        if (this.rule && rules[this.rule]) {
+            this.ruleList = rules[this.rule].getApplicableRules(this.fromDate, this.toDate);
+        }
      }
 
     getName() {
@@ -33,6 +44,10 @@ export default class Zone {
 
     getPath() {
 
+    }
+
+    getRules() {
+        return this.ruleList;
     }
 
     toJson() {

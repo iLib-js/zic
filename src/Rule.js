@@ -18,6 +18,7 @@
  */
 
 import isDigit from 'ilib-es6';
+import { lastSecond } from './utils';
 
 const log4js = require("log4js");
 const logger = log4js.getLogger("zic.Rule");
@@ -34,7 +35,10 @@ class Rule {
 
         this.name = name;
         this.from = from;
+        this.fromDate = Date.parse(this.from) || Date.UTC(1883, 0, 1);
         this.to = to;
+        this.toDate = (!to || to === "present") ? (new Date()).getTime(): lastSecond(String(this.to));
+
         if (start) {
             this.start = {
                 month: start.month,

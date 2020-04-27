@@ -53,8 +53,8 @@ module.exports.testrule = {
 
         const r = new Rule({
             name: ts.getName(),
-            from: 1987,
-            to: 1987,
+            from: "1987",
+            to: "1987",
             start: ts,
             end: te
         });
@@ -62,7 +62,9 @@ module.exports.testrule = {
         test.contains(r, {
             name: "StJohns",
             from: 1987,
+            fromDate: Date.UTC(1987, 0, 1, 0, 0, 0),
             to: 1987,
+            toDate: Date.UTC(1987, 11, 31, 23, 59, 59),
             start: {
                 month: 4,
                 rule: "0>=1",
@@ -81,6 +83,5 @@ module.exports.testrule = {
             }
         }, "tester");
         test.done();
-    },
-
+    }
 };

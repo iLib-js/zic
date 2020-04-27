@@ -140,6 +140,22 @@ export default class RuleList {
     }
 
     /**
+     * Return a new rule list which has only the rules that applied
+     * from the given "from" date to the the given "to" date.
+     * @return {Array<Rule>} the rules applicable in that interval
+     */
+    getApplicableRules(from, to) {
+        this.processRules();
+
+        return this.rules.filter(rule => {
+            return (rule.from <= from && from <= rule.to) ||
+                (rule.from <= to && to <= rule.to) ||
+                (from <= rule.from && rule.from <= to) ||
+                (from <= rule.to && rule.to <= to);
+        });
+    }
+
+    /**
      * Find the rule that applies to the given date.
      * @param {Date} date the date to search
      * @returns {number} The index of the rule that applies on that date

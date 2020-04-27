@@ -19,6 +19,7 @@
  */
 
 import { isDigit, GregorianDate } from 'ilib-es6';
+import { lastSecond } from './utils';
 
 const log4js = require("log4js");
 const logger = log4js.getLogger("zic.Transition");
@@ -128,9 +129,13 @@ class Transition {
             this.abbreviation = fields[9] === '-' ? "" : fields[9];
         } else {
             Object.assign(this, fields);
+            this.from = String(this.from);
+            this.to = String(this.to);
         }
         this.timeInMinutes = convertToMinutes(this.time);
         this.savingsInMinutes = convertToMinutes(this.savings);
+        this.fromDate = Date.UTC(this.from);
+        this.toDate = lastSecond(this.to);
     }
 
     getName() {

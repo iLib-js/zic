@@ -20,21 +20,26 @@
 import RawZone from '../src/RawZone';
 import Zone from '../src/Zone';
 
-module.exports.testzone= {
+module.exports.testzone = {
     testConstructorSimple: test => {
-        test.expect(5);
+        test.expect(7);
         const z = new Zone({
             offset: "-3:30",
             format: "LMT",
-            rule: "",
-            to: "1884"
+            to: "1940",
+            toDate: Date.parse("1940")
+        }, {
+            to: "1884",
+            toDate: Date.parse("1884")
         });
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "-3:30");
         test.equal(z.format, "LMT");
-        test.equal(z.rule, "");
-        test.equal(z.to, "1884");
+        test.equal(z.from, "1884");
+        test.equal(z.fromDate, Date.UTC(1884, 0, 1, 0, 0, 0));
+        test.equal(z.to, "1940");
+        test.equal(z.toDate, Date.UTC(1939, 11, 31, 23, 59, 59));
         test.done();
     },
 };
