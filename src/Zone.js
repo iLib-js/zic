@@ -26,8 +26,8 @@ export default class Zone {
 
         // time zones were first used in 1883
         this.from = previousRawZone.to || "1883";
-        this.fromDate = previousRawZone.toDate || Date.UTC(1883, 0, 1);
-        this.toDate = rawZone.toDate - 1000;
+        this.fromDate = previousRawZone.toDate ? previousRawZone.toDate + 1000 : Date.UTC(1883, 0, 1);
+        this.toDate = rawZone.toDate;
 
         if (!this.name && previousRawZone.name) {
             this.name = previousRawZone.name;

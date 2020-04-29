@@ -27,10 +27,10 @@ module.exports.testzone = {
             offset: "-3:30",
             format: "LMT",
             to: "1940",
-            toDate: Date.parse("1940")
+            toDate: Date.parse("1940") - 1000
         }, {
             to: "1884",
-            toDate: Date.parse("1884")
+            toDate: Date.parse("1884") - 1000
         });
         test.ok(typeof(z) !== "undefined");
 

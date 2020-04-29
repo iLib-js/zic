@@ -120,6 +120,22 @@ module.exports.testutils = {
         test.done();
     },
 
+    testParseDateMax: test => {
+        test.expect(1);
+        // max date is 100M days since Jan 1, 1970
+        var d = parseDate("max");
+        test.equal(d.getTimeExtended(), 8640000000000000);
+        test.done();
+    },
+
+    testParseDatePresent: test => {
+        test.expect(1);
+        // treat present the same as max date
+        var d = parseDate("present");
+        test.equal(d.getTimeExtended(), 8640000000000000);
+        test.done();
+    },
+
     testLastSecondYearOnly: test => {
         test.expect(1);
         test.equal(lastSecond("1994"), Date.UTC(1994, 11, 31, 23, 59, 59));
@@ -140,19 +156,19 @@ module.exports.testutils = {
 
     testLastSecondYearMonthDayTime: test => {
         test.expect(1);
-        test.equal(lastSecond("1994 Oct 26 2:00"), Date.UTC(1994, 9, 26, 2, 0, 0));
+        test.equal(lastSecond("1994 Oct 26 2:00"), Date.UTC(1994, 9, 26, 1, 59, 59));
         test.done();
     },
 
     testLastSecondYearMonthDayTime2: test => {
         test.expect(1);
-        test.equal(lastSecond("1994 Oct 26 2:30"), Date.UTC(1994, 9, 26, 2, 30, 0));
+        test.equal(lastSecond("1994 Oct 26 2:30"), Date.UTC(1994, 9, 26, 2, 29, 59));
         test.done();
     },
 
     testLastSecondYearMonthDayFullTime: test => {
         test.expect(1);
-        test.equal(lastSecond("1994 Oct 26 2:30:30"), Date.UTC(1994, 9, 26, 2, 30, 30));
+        test.equal(lastSecond("1994 Oct 26 2:30:30"), Date.UTC(1994, 9, 26, 2, 30, 29));
         test.done();
     },
     
@@ -168,5 +184,20 @@ module.exports.testutils = {
         // not a leap year
         test.equal(lastSecond("1991 Feb"), Date.UTC(1991, 1, 28, 23, 59, 59));
         test.done();
+    },
+    
+    testLastSecondMax: test => {
+        test.expect(1);
+        // max date is 100M days since Jan 1, 1970
+        test.equal(lastSecond("max"), 8640000000000000);
+        test.done();
+    },
+
+    testLastSecondPresent: test => {
+        test.expect(1);
+        // treat present the same as max date
+        test.equal(lastSecond("present"), 8640000000000000);
+        test.done();
     }
+
 };

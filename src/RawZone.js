@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { lastSecond } from './utils';
+import { parseDate, lastSecond } from './utils';
 
 const log4js = require("log4js");
 const logger = log4js.getLogger("zic.RawZone");
@@ -57,7 +57,12 @@ export default class RawZone {
             Object.assign(this, fields);
         }
 
-        this.toDate = (typeof(this.to) === 'undefined' || this.to === "present") ? Date.now() : lastSecond(this.to);
+        if (typeof(this.to) === 'undefined' || this.to === "present") {
+            this.toDate =  Date.now();
+        } else {
+            const d = parseDate(this.to);
+            this.toDate = d.getTimeExtended() - 1000;
+        }
     }
 
     getName() {

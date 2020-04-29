@@ -20,18 +20,18 @@
 import { CalendarFactory, DateFactory } from 'ilib-es6';
 
 const months = {
-    "Jan": 1,
-    "Feb": 2,
-    "Mar": 3,
-    "Apr": 4,
-    "May": 5,
-    "Jun": 6,
-    "Jul": 7,
-    "Aug": 8,
-    "Sep": 9,
-    "Oct": 10,
-    "Nov": 11,
-    "Dec": 12
+    "jan": 1,
+    "feb": 2,
+    "mar": 3,
+    "apr": 4,
+    "may": 5,
+    "jun": 6,
+    "jul": 7,
+    "aug": 8,
+    "sep": 9,
+    "oct": 10,
+    "nov": 11,
+    "dec": 12
 };
 
 export function pad2(num) {
@@ -74,26 +74,31 @@ export function parseDate(dateStr) {
     var dateElements = {
         timezone: "Etc/UTC"
     };
-    var parts = dateStr.trim().split(/\s+/g);
-    dateElements.year = parseInt(parts[0]);
-    if (isNaN(dateElements.year)) {
-        return undefined;
-    }
-    if (parts.length > 1) {
-        dateElements.month = months[parts[1]] || 0;
-        if (parts.length > 2) {
-            dateElements.day = parseInt(parts[2]);
-            if (isNaN(dateElements.day)) {
-                dateElements.day = 1;
-            }
+    dateStr = dateStr.toLowerCase();
+    if (dateStr === "max" || dateStr === "present") {
+        dateElements.unixtime = 8640000000000000;
+    } else {
+        var parts = dateStr.trim().split(/\s+/g);
+        dateElements.year = parseInt(parts[0]);
+        if (isNaN(dateElements.year)) {
+            return undefined;
+        }
+        if (parts.length > 1) {
+            dateElements.month = months[parts[1]] || 0;
+            if (parts.length > 2) {
+                dateElements.day = parseInt(parts[2]);
+                if (isNaN(dateElements.day)) {
+                    dateElements.day = 1;
+                }
 
-            if (parts.length > 3) {
-                var timeParts = parts[3].split(/:/g);
-                dateElements.hour = timeParts[0];
-                if (timeParts.length > 1) {
-                    dateElements.minute = timeParts[1];
-                    if (timeParts.length > 2) {
-                        dateElements.second = timeParts[2];
+                if (parts.length > 3) {
+                    var timeParts = parts[3].split(/:/g);
+                    dateElements.hour = timeParts[0];
+                    if (timeParts.length > 1) {
+                        dateElements.minute = timeParts[1];
+                        if (timeParts.length > 2) {
+                            dateElements.second = timeParts[2];
+                        }
                     }
                 }
             }
@@ -103,6 +108,8 @@ export function parseDate(dateStr) {
 }
 
 export function lastSecond(dateStr) {
+    dateStr = dateStr.toLowerCase();
+    if (dateStr === "max" || dateStr === "present") return 8640000000000000;
     const d = parseDate(dateStr);
 
     let year = d.getYears(),
@@ -148,10 +155,9 @@ export function lastSecond(dateStr) {
                 second: 59
             });
         }
+        return date.getTimeExtended();
     } else {
-        date = d;
+        return d.getTimeExtended() - 1000;
     }
-
-    return date.getTimeExtended();
 };
 

@@ -71,7 +71,9 @@ module.exports.testrule = {
                 time: "0:01",
                 zoneChar: "w",
                 savings: "1:00",
-                abbreviation: "D"
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
             },
             end: {
                 month: 10,
@@ -79,7 +81,9 @@ module.exports.testrule = {
                 time: "0:01",
                 zoneChar: "w",
                 savings: "0",
-                abbreviation: "S"
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
             }
         }, "tester");
         test.done();

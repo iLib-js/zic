@@ -148,10 +148,10 @@ export default class RuleList {
         this.processRules();
 
         return this.rules.filter(rule => {
-            return (rule.from <= from && from <= rule.to) ||
-                (rule.from <= to && to <= rule.to) ||
-                (from <= rule.from && rule.from <= to) ||
-                (from <= rule.to && rule.to <= to);
+            return (rule.fromDate <= from && from <= rule.toDate) ||
+                (rule.fromDate <= to && to <= rule.toDate) ||
+                (from <= rule.fromDate && rule.fromDate <= to) ||
+                (from <= rule.toDate && rule.toDate <= to);
         });
     }
 

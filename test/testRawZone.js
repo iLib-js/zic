@@ -24,13 +24,14 @@ function split(line) {
     return cleanLine.split(/\s+/g);
 }
 
-module.exports.testrawzone= {
+module.exports.testrawzone = {
     testConstructorSimple: test => {
-        test.expect(6);
+        test.expect(7);
         const fields = split("Zone America/St_Johns   -3:30 -      LMT     1884");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
+        test.equal(z.name, "America/St_Johns");
         test.equal(z.offset, "-3:30");
         test.equal(z.format, "LMT");
         test.equal(z.rule, "");
@@ -53,11 +54,12 @@ module.exports.testrawzone= {
     },
 
     testConstructorPositiveOffset: test => {
-        test.expect(5);
+        test.expect(6);
         const fields = split("Zone    Pacific/Fiji    12:00 -      LMT     1915");
         const z = new RawZone(fields);
         test.ok(typeof(z) !== "undefined");
 
+        test.equal(z.name, "Pacific/Fiji");
         test.equal(z.offset, "12:00");
         test.equal(z.format, "LMT");
         test.equal(z.rule, "");
@@ -118,7 +120,7 @@ module.exports.testrawzone= {
         test.equal(z.rule, "");
         test.equal(z.to, "1915 Oct");
         test.ok(!z.time);
-        test.equal(z.toDate, Date.UTC(1915, 9, 31, 23, 59, 59));
+        test.equal(z.toDate, Date.UTC(1915, 8, 30, 23, 59, 59));
 
         test.done();
     },
@@ -134,7 +136,7 @@ module.exports.testrawzone= {
         test.equal(z.rule, "");
         test.equal(z.to, "1915 Oct 26");
         test.ok(!z.time);
-        test.equal(z.toDate, Date.UTC(1915, 9, 26, 23, 59, 59));
+        test.equal(z.toDate, Date.UTC(1915, 9, 25, 23, 59, 59));
         test.done();
     },
 
@@ -149,7 +151,7 @@ module.exports.testrawzone= {
         test.equal(z.rule, "");
         test.equal(z.to, "1915 Oct 26 2:00");
         test.equal(z.time, "2:00");
-        test.equal(z.toDate, Date.UTC(1915, 9, 26, 2, 0, 0));
+        test.equal(z.toDate, Date.UTC(1915, 9, 26, 1, 59, 59));
         test.done();
     },
 
@@ -193,4 +195,19 @@ module.exports.testrawzone= {
         test.equal(z.to, "present");
         test.done();
     },
+
+    testConstructorNoRule: test => {
+        test.expect(6);
+        const fields = split("Zone Pacific/Auckland   11:39:04 -      LMT     1868 Nov  2");
+        const z = new RawZone(fields);
+        test.ok(typeof(z) !== "undefined");
+
+        test.equal(z.name, "Pacific/Auckland");
+        test.equal(z.offset, "11:39:04");
+        test.equal(z.format, "LMT");
+        test.equal(z.rule, "");
+        test.equal(z.to, "1868 Nov 2");
+        test.done();
+    },
+
 };

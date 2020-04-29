@@ -48,7 +48,7 @@ class IANAFile {
                     recentZone = false;
                     recentZoneName = undefined;
                 } else if (fields[0] === "Zone" || recentZone) {
-                    if (recentZone) {
+                    if (fields[0] !== "Zone" && recentZone) {
                         fields.splice(0, 1, "Zone", recentZoneName);
                     }
                     const z = new RawZone(fields);

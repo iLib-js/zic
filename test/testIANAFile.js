@@ -22,7 +22,7 @@ import IANAFile from '../src/IANAFile';
 module.exports.testianafile = {
     testConstructorSimple: test => {
         test.expect(3);
-        
+
         const contents =
 `Rule    Fiji    1998    1999    -       Nov     Sun>=1  2:00    1:00    -
 Rule    Fiji    1999    2000    -       Feb     lastSun 3:00    0       -
@@ -33,19 +33,19 @@ Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26
         const z = new IANAFile();
         z.setContents(contents);
         test.ok(typeof(z) !== "undefined");
-        
+
         const transitions = z.getTransitions();
         test.equal(transitions.length, 4);
-        
+
         const zones = z.getRawZones();
 
         test.equal(zones.length, 2);
         test.done();
     },
-    
+
     testConstructorRightContents: test => {
         test.expect(47);
-        
+
         const contents =
 `Rule    Fiji    1998    1999    -       Nov     Sun>=1  2:00    1:00    -
 Rule    Fiji    1999    2000    -       Feb     lastSun 3:00    0       -
@@ -56,10 +56,10 @@ Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26
         const z = new IANAFile();
         z.setContents(contents);
         test.ok(typeof(z) !== "undefined");
-        
+
         const transitions = z.getTransitions();
         test.equal(transitions.length, 4);
-        
+
         test.equal(transitions[0].getName(), "Fiji");
         test.equal(transitions[0].from, "1998");
         test.equal(transitions[0].to, "1999");
@@ -119,7 +119,7 @@ Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26
 
     testConstructorIgnoreBlankLines: test => {
         test.expect(3);
-        
+
         const contents =
 `Rule    Fiji    1998    1999    -       Nov     Sun>=1  2:00    1:00    -
 Rule    Fiji    1999    2000    -       Feb     lastSun 3:00    0       -
@@ -132,19 +132,19 @@ Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26
         const z = new IANAFile();
         z.setContents(contents);
         test.ok(typeof(z) !== "undefined");
-        
+
         const transitions = z.getTransitions();
         test.equal(transitions.length, 4);
-        
+
         const zones = z.getRawZones();
 
         test.equal(zones.length, 2);
         test.done();
     },
-    
+
     testConstructorIgnoreComments: test => {
         test.expect(3);
-        
+
         const contents =
 `# Rule  NAME    FROM    TO      TYPE    IN      ON      AT      SAVE    LETTER/S
 Rule    Fiji    1998    1999    -       Nov     Sun>=1  2:00    1:00    -
@@ -157,10 +157,10 @@ Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26
         const z = new IANAFile();
         z.setContents(contents);
         test.ok(typeof(z) !== "undefined");
-        
+
         const transitions = z.getTransitions();
         test.equal(transitions.length, 4);
-        
+
         const zones = z.getRawZones();
 
         test.equal(zones.length, 2);
@@ -169,7 +169,7 @@ Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26
 
     testConstructorIgnoreCommentsSameLine: test => {
         test.expect(3);
-        
+
         const contents =
 `# Rule  NAME    FROM    TO      TYPE    IN      ON      AT      SAVE    LETTER/S
 Rule    Fiji    1998    1999    -       Nov     Sun>=1  2:00    1:00    -
@@ -177,15 +177,15 @@ Rule    Fiji    1999    2000    -       Feb     lastSun 3:00    0       - # This
 Rule    Fiji    2009    only    -       Nov     29      2:00    1:00    -
 Rule    Fiji    2010    only    -       Mar     lastSun 3:00    0       -
 # Zone  NAME            STDOFF  RULES   FORMAT  [UNTIL]
-Zone    Pacific/Fiji    11:55:44 -      LMT     1915 # Oct 26 
+Zone    Pacific/Fiji    11:55:44 -      LMT     1915 # Oct 26
                         12:00   Fiji    +12/+13`;
         const z = new IANAFile();
         z.setContents(contents);
         test.ok(typeof(z) !== "undefined");
-        
+
         const transitions = z.getTransitions();
         test.equal(transitions.length, 4);
-        
+
         const zones = z.getRawZones();
 
         test.equal(zones.length, 2);
@@ -194,7 +194,7 @@ Zone    Pacific/Fiji    11:55:44 -      LMT     1915 # Oct 26
 
     testConstructorZoneContinuationDoesNotEndAtComment: test => {
         test.expect(5);
-        
+
         const contents =
 `Rule    Fiji    1998    1999    -       Nov     Sun>=1  2:00    1:00    -
 Rule    Fiji    1999    2000    -       Feb     lastSun 3:00    0       -
@@ -209,14 +209,14 @@ Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26
         const z = new IANAFile();
         z.setContents(contents);
         test.ok(typeof(z) !== "undefined");
-        
+
         const transitions = z.getTransitions();
         test.equal(transitions.length, 4);
-        
+
         const zones = z.getRawZones();
 
         test.equal(zones.length, 2);
-        
+
         test.equal(zones[0].getName(), "Pacific/Fiji");
         test.equal(zones[1].getName(), "Pacific/Fiji");
         test.done();
@@ -224,7 +224,7 @@ Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26
 
     testConstructorZoneContinuationEndsAtBlankLine: test => {
         test.expect(3);
-        
+
         const contents =
 `Rule    Fiji    1998    1999    -       Nov     Sun>=1  2:00    1:00    -
 Rule    Fiji    1999    2000    -       Feb     lastSun 3:00    0       -
@@ -241,10 +241,10 @@ Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
         const z = new IANAFile();
         z.setContents(contents);
         test.ok(typeof(z) !== "undefined");
-        
+
         const transitions = z.getTransitions();
         test.equal(transitions.length, 4);
-        
+
         const zones = z.getRawZones();
 
         test.equal(zones.length, 4);
@@ -253,7 +253,7 @@ Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
 
     testConstructorZoneContinuationEndsAtNewRule: test => {
         test.expect(3);
-        
+
         const contents =
 `Rule    Fiji    1998    1999    -       Nov     Sun>=1  2:00    1:00    -
 Rule    Fiji    1999    2000    -       Feb     lastSun 3:00    0       -
@@ -269,10 +269,37 @@ Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
         const z = new IANAFile();
         z.setContents(contents);
         test.ok(typeof(z) !== "undefined");
-        
+
         const transitions = z.getTransitions();
         test.equal(transitions.length, 4);
-        
+
+        const zones = z.getRawZones();
+
+        test.equal(zones.length, 4);
+        test.done();
+    },
+
+    testConstructorZoneContinuationEndsAtNewZone: test => {
+        test.expect(3);
+
+        const contents =
+`Rule    Fiji    1998    1999    -       Nov     Sun>=1  2:00    1:00    -
+Rule    Fiji    1999    2000    -       Feb     lastSun 3:00    0       -
+Rule    Fiji    2009    only    -       Nov     29      2:00    1:00    -
+Rule    Chatham    2010    only    -       Mar     lastSun 3:00    0       -
+
+Zone    Pacific/Fiji    11:55:44 -      LMT     1915 Oct 26
+                        12:00   Fiji    +12/+13
+Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
+                        11:00   Chatham +11/+12
+`;
+        const z = new IANAFile();
+        z.setContents(contents);
+        test.ok(typeof(z) !== "undefined");
+
+        const transitions = z.getTransitions();
+        test.equal(transitions.length, 4);
+
         const zones = z.getRawZones();
 
         test.equal(zones.length, 4);
@@ -281,13 +308,13 @@ Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
 
     testConstructorLoadFile: test => {
         test.expect(3);
-        
+
         const z = new IANAFile("./test/testfiles/samplerules");
         test.ok(typeof(z) !== "undefined");
-        
+
         const transitions = z.getTransitions();
         test.equal(transitions.length, 25);
-        
+
         const zones = z.getRawZones();
 
         test.equal(zones.length, 6);
@@ -296,7 +323,7 @@ Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
 
     testConstructorLoadNonexistentFile: test => {
         test.expect(1);
-        
+
         test.throws(function() {
             new IANAFile("./test/testfiles/nonexistent");
         });

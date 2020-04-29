@@ -162,7 +162,7 @@ module.exports.testzoneset = {
             new Transition({
                 name: "StJohns",
                 from: "1987",
-                to: "1987",
+                to: "1988",
                 month: 4,
                 rule: "0>=1",
                 time: "0:01",
@@ -174,7 +174,7 @@ module.exports.testzoneset = {
             new Transition({
                 name: "StJohns",
                 from: "1987",
-                to: "1987",
+                to: "1988",
                 month: 10,
                 rule: "l0",
                 time: "0:01",
@@ -204,8 +204,8 @@ module.exports.testzoneset = {
             name: "StJohns",
             from: "1987",
             fromDate: Date.UTC(1987, 0, 1),
-            to: "1987",
-            toDate: Date.UTC(1987, 11, 31, 23, 59, 59),
+            to: "1988",
+            toDate: Date.UTC(1988, 11, 31, 23, 59, 59),
             start: {
                 month: 4,
                 rule: "0>=1",
@@ -238,7 +238,7 @@ module.exports.testzoneset = {
             new Transition({
                 name: "StJohns",
                 from: "1987",
-                to: "1987",
+                to: "1988",
                 month: 4,
                 rule: "0>=1",
                 time: "0:01",
@@ -291,8 +291,8 @@ module.exports.testzoneset = {
             name: "StJohns",
             from: "1987",
             fromDate: Date.UTC(1987, 0, 1),
-            to: "1987",
-            toDate: Date.UTC(1987, 11, 31, 23, 59, 59),
+            to: "1988",
+            toDate: Date.UTC(1988, 11, 31, 23, 59, 59),
             start: {
                 month: 4,
                 rule: "0>=1",
@@ -363,7 +363,7 @@ module.exports.testzoneset = {
             new Transition({
                 name: "StJohns",
                 from: "1987",
-                to: "1987",
+                to: "1988",
                 month: 10,
                 rule: "l0",
                 time: "1:00",
@@ -404,8 +404,8 @@ module.exports.testzoneset = {
             name: "StJohns",
             from: "1987",
             fromDate: Date.UTC(1987, 0, 1),
-            to: "1987",
-            toDate: Date.UTC(1987, 11, 31, 23, 59, 59),
+            to: "1988",
+            toDate: Date.UTC(1988, 11, 31, 23, 59, 59),
             start: {
                 month: 4,
                 rule: "0>=1",
@@ -800,7 +800,7 @@ module.exports.testzoneset = {
             new Transition({
                 name: "StJohns",
                 from: "1987",
-                to: "1987",
+                to: "1988",
                 month: 4,
                 rule: "0>=1",
                 time: "0:01",
@@ -823,7 +823,7 @@ module.exports.testzoneset = {
             new Transition({
                 name: "StJohns",
                 from: "1988",
-                to: "1988",
+                to: "1989",
                 month: 4,
                 rule: "0>=1",
                 time: "0:01",
@@ -886,8 +886,8 @@ module.exports.testzoneset = {
             name: "StJohns",
             from: "1987",
             fromDate: Date.UTC(1987, 0, 1),
-            to: "1987",
-            toDate: Date.UTC(1987, 11, 31, 23, 59, 59),
+            to: "1988",
+            toDate: Date.UTC(1988, 11, 31, 23, 59, 59),
             start: {
                 month: 4,
                 rule: "0>=1",
@@ -913,8 +913,8 @@ module.exports.testzoneset = {
             name: "StJohns",
             from: "1988",
             fromDate: Date.UTC(1988, 0, 1),
-            to: "1988",
-            toDate: Date.UTC(1988, 11, 31, 23, 59, 59),
+            to: "1989",
+            toDate: Date.UTC(1989, 11, 31, 23, 59, 59),
             start: {
                 month: 4,
                 rule: "0>=1",
@@ -1272,7 +1272,7 @@ module.exports.testzoneset = {
         const rs = new Transition({
             name: "StJohns",
             from: "1987",
-            to: "1987",
+            to: "1988",
             month: 4,
             rule: "0>=1",
             time: "0:01",
@@ -1284,7 +1284,7 @@ module.exports.testzoneset = {
         const re = new Transition({
             name: "StJohns",
             from: "1987",
-            to: "1987",
+            to: "1988",
             month: 10,
             rule: "l0",
             time: "0:01",
@@ -1380,7 +1380,7 @@ module.exports.testzoneset = {
             }),
             new Transition({
                 name: "Canada",
-                from: "1920",
+                from: "1918",
                 to: "present",
                 month: 4,
                 rule: "0>=1",
@@ -1391,7 +1391,7 @@ module.exports.testzoneset = {
             }),
             new Transition({
                 name: "Canada",
-                from: "1920",
+                from: "1918",
                 to: "present",
                 month: 10,
                 rule: "l0",
@@ -1446,7 +1446,7 @@ module.exports.testzoneset = {
         test.equal(zones[0].from, "1883"); // time zones were first used in 1883
         test.equal(zones[0].fromDate, Date.UTC(1883,0,1,0,0,0));
         test.equal(zones[0].to, "1884");
-        test.equal(zones[0].toDate, Date.UTC(1884,11,31,23,59,59));
+        test.equal(zones[0].toDate, Date.UTC(1883,11,31,23,59,59));
 
         test.equal(zones[1].name, "America/St_Johns");
         test.equal(zones[1].offset, "-3:30:52");
@@ -1454,7 +1454,7 @@ module.exports.testzoneset = {
         test.equal(zones[1].from, "1884");
         test.equal(zones[1].fromDate, Date.UTC(1884,0,1,0,0,0));
         test.equal(zones[1].to, "1918");
-        test.equal(zones[1].toDate, Date.UTC(1918,11,31,23,59,59));
+        test.equal(zones[1].toDate, Date.UTC(1917,11,31,23,59,59));
         test.equal(zones[1].rule, "StJohns");
         let rules = zones[1].getRules();
         test.ok(rules);
@@ -1464,10 +1464,10 @@ module.exports.testzoneset = {
         test.equal(zones[2].name, "America/St_Johns");
         test.equal(zones[2].offset, "-3:30:52");
         test.equal(zones[2].format, "N{s}T");
-        test.equal(zones[2].from, "1919");
-        test.equal(zones[2].fromDate, Date.UTC(1919,0,1,0,0,0));
+        test.equal(zones[2].from, "1918");
+        test.equal(zones[2].fromDate, Date.UTC(1918,0,1,0,0,0));
         test.equal(zones[2].to, "1919");
-        test.equal(zones[2].toDate, Date.UTC(1919,11,31,23,59,59));
+        test.equal(zones[2].toDate, Date.UTC(1918,11,31,23,59,59));
         test.equal(zones[2].rule, "Canada");
         rules = zones[2].getRules();
         test.ok(rules);
@@ -1477,9 +1477,10 @@ module.exports.testzoneset = {
         test.equal(zones[3].name, "America/St_Johns");
         test.equal(zones[3].offset, "-3:30:52");
         test.equal(zones[3].format, "N{s}T");
-        test.equal(zones[3].from, "1920");
-        test.equal(zones[3].fromDate, Date.UTC(1920,0,1,0,0,0));
+        test.equal(zones[3].from, "1919");
+        test.equal(zones[3].fromDate, Date.UTC(1919,0,1,0,0,0));
         test.equal(zones[3].to, "present");
+        test.equal(zones[3].toDate, 8640000000000000);
         test.equal(zones[3].rule, "StJohns");
         rules = zones[3].getRules();
         test.ok(rules);
