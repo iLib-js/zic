@@ -44,10 +44,10 @@ export default class ZoneList {
 
         // this.rawZones.sort(compareRawZones);
 
-        this.zones.push(new Zone(this.rawZones[0], undefined, this.rules));
+        this.zones.push(new Zone(this.name, this.rawZones[0], undefined, this.rules));
 
         for (let i = 1; i < this.rawZones.length; i++) {
-            this.zones.push(new Zone(this.rawZones[i], this.rawZones[i-1], this.rules));
+            this.zones.push(new Zone(this.name, this.rawZones[i], this.rawZones[i-1], this.rules));
         }
 
         this.rulesProcessed = true;
@@ -65,6 +65,7 @@ export default class ZoneList {
      * Add a Zone to the set
      */
     addRawZone(zone) {
+        this.rulesProcessed = false;
         this.rawZones.push(zone);
     }
 

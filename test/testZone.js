@@ -23,7 +23,7 @@ import Zone from '../src/Zone';
 module.exports.testzone = {
     testConstructorSimple: test => {
         test.expect(7);
-        const z = new Zone({
+        const z = new Zone("America/St_Johns", {
             offset: "-3:30",
             format: "LMT",
             to: "1940",

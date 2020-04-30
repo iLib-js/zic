@@ -132,7 +132,7 @@ module.exports.testutils = {
         test.expect(1);
         // treat present the same as max date
         var d = parseDate("present");
-        test.equal(d.getTimeExtended(), 8640000000000000);
+        test.ok(Date.now() - d.getTimeExtended() < 1000);
         test.done();
     },
 
@@ -196,7 +196,7 @@ module.exports.testutils = {
     testLastSecondPresent: test => {
         test.expect(1);
         // treat present the same as max date
-        test.equal(lastSecond("present"), 8640000000000000);
+        test.ok(Date.now() - lastSecond("present") < 1000);
         test.done();
     }
 

@@ -1331,7 +1331,7 @@ module.exports.testzoneset = {
     },
 
     testGetZonesRightContent: test => {
-        test.expect(28);
+        test.expect(42);
 
         const transitions = [
             new Transition({
@@ -1475,12 +1475,12 @@ module.exports.testzoneset = {
         test.equal(rules[0].getName(), "Canada");
 
         test.equal(zones[3].name, "America/St_Johns");
-        test.equal(zones[3].offset, "-3:30:52");
+        test.equal(zones[3].offset, "-3:30");
         test.equal(zones[3].format, "N{s}T");
         test.equal(zones[3].from, "1919");
         test.equal(zones[3].fromDate, Date.UTC(1919,0,1,0,0,0));
         test.equal(zones[3].to, "present");
-        test.equal(zones[3].toDate, 8640000000000000);
+        test.ok(Date.now() - zones[3].toDate < 1000);
         test.equal(zones[3].rule, "StJohns");
         rules = zones[3].getRules();
         test.ok(rules);

@@ -75,8 +75,10 @@ export function parseDate(dateStr) {
         timezone: "Etc/UTC"
     };
     dateStr = dateStr.toLowerCase();
-    if (dateStr === "max" || dateStr === "present") {
+    if (dateStr === "max") {
         dateElements.unixtime = 8640000000000000;
+    } else if (dateStr === "present") {
+        dateElements.unixtime = Date.now();
     } else {
         var parts = dateStr.trim().split(/\s+/g);
         dateElements.year = parseInt(parts[0]);
@@ -109,7 +111,8 @@ export function parseDate(dateStr) {
 
 export function lastSecond(dateStr) {
     dateStr = dateStr.toLowerCase();
-    if (dateStr === "max" || dateStr === "present") return 8640000000000000;
+    if (dateStr === "max") return 8640000000000000;
+    if (dateStr === "present") return Date.now();
     const d = parseDate(dateStr);
 
     let year = d.getYears(),

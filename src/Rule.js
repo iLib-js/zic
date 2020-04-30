@@ -37,7 +37,7 @@ class Rule {
         this.from = from;
         this.fromDate = Date.parse(this.from) || Date.UTC(1883, 0, 1);
         this.to = to;
-        this.toDate = (!to || to === "present") ? (new Date()).getTime(): lastSecond(String(this.to));
+        this.toDate = (!to || to === "present") ? Date.now(): lastSecond(String(this.to));
 
         if (start) {
             this.start = {

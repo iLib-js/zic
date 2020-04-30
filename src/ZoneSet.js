@@ -24,8 +24,8 @@ const path = require("path");
 
 export default class ZoneSet {
     constructor() {
-        this.rules = {};
-        this.zones = {};
+        this.ruleLists = {};
+        this.zoneLists = {};
     }
 
     /**
@@ -37,10 +37,10 @@ export default class ZoneSet {
      */
     addTransition(transition) {
         const name = transition.getName();
-        let list = this.rules[name];
+        let list = this.ruleLists[name];
         if (!list) {
             list = new RuleList(name);
-            this.rules[name] = list;
+            this.ruleLists[name] = list;
         }
         list.addTransition(transition);
     }
@@ -66,13 +66,13 @@ export default class ZoneSet {
      */
     addRawZone(rawZone) {
         const name = rawZone.getName() || this.lastZoneName;
-        let list = this.zones[name];
+        let list = this.zoneLists[name];
         if (!list) {
             list = new ZoneList({
                 name,
-                rules: this.rules
+                rules: this.ruleLists
             });
-            this.zones[name] = list;
+            this.zoneLists[name] = list;
         }
         list.addRawZone(rawZone);
         this.lastZoneName = name;
@@ -93,13 +93,13 @@ export default class ZoneSet {
      *
      */
     getRuleLists() {
-        return this.rules;
+        return this.ruleLists;
     }
 
     /**
      *
      */
     getZoneLists() {
-        return this.zones;
+        return this.zoneLists;
     }
 }
