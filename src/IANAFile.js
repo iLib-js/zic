@@ -32,7 +32,7 @@ class IANAFile {
             this.setContents(data);
         }
     }
-    
+
     setContents(contents) {
         const lines = contents.split(/\n/g);
         let recentZone = false;

@@ -171,7 +171,7 @@ module.exports.testutils = {
         test.equal(lastSecond("1994 Oct 26 2:30:30"), Date.UTC(1994, 9, 26, 2, 30, 29));
         test.done();
     },
-    
+
     testLastSecondYearMonthLeapYear: test => {
         test.expect(1);
         // leap year
@@ -185,7 +185,7 @@ module.exports.testutils = {
         test.equal(lastSecond("1991 Feb"), Date.UTC(1991, 1, 28, 23, 59, 59));
         test.done();
     },
-    
+
     testLastSecondMax: test => {
         test.expect(1);
         // max date is 100M days since Jan 1, 1970
