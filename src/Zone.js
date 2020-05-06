@@ -42,6 +42,8 @@ export default class Zone {
         if (this.rule && rules[this.rule]) {
             this.ruleList = rules[this.rule].getApplicableRules(this.fromDate, this.toDate);
         }
+
+        this.format = this.format && this.format.replace(/%s/g, "{s}");
      }
 
     getName() {

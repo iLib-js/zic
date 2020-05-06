@@ -1,5 +1,5 @@
 /*
- * testRule.js - test the rule object
+ * testRuleList.js - test the rule list object
  *
  * Copyright © 2020, JEDLSoft
  *
@@ -19,31 +19,159 @@
 
 import Transition from '../src/Transition';
 import Rule from '../src/Rule';
+import RuleList from '../src/RuleList';
 
 function split(line) {
     const cleanLine = line.replace(/#.*$/g, "");
     return cleanLine.split(/\s+/g);
 }
 
-module.exports.testrule = {
+module.exports.testrulelist = {
     testConstructorSimple: test => {
         test.expect(1);
+
+        const rl = new RuleList("StJohns");
+        test.ok(rl);
+
+        test.done();
+    },
+
+    testConstructorNoName: test => {
+        test.expect(2);
+        let rl;
+
+        test.throws(function noname() {
+            rl = new RuleList();
+            test.fail();
+        });
+
+        test.ok(!rl);
+
+        test.done();
+    },
+
+    testGetName: test => {
+        test.expect(2);
+        const rl = new RuleList("StJohns");
+        test.ok(rl);
+
+        test.equal(rl.getName(), "StJohns");
+        test.done();
+    },
+
+    testGetRulesReturnsArray: test => {
+        test.expect(3);
         let fields = split("Rule    StJohns 1987    only    -       Apr     Sun>=1  0:01    1:00    D");
         const ts = new Transition(fields);
         fields = split("Rule    StJohns 1987    2006    -       Oct     lastSun 0:01    0       S");
         const te = new Transition(fields);
 
-        const r = new Rule({
-            from: 1987,
-            to: 1987,
-            start: ts,
-            end: te
-        });
+        const rl = new RuleList("StJohns");
+        test.ok(rl);
 
-        test.ok(typeof(r) !== "undefined");
+        rl.addTransition(ts);
+        rl.addTransition(te);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+        test.ok(Array.isArray(rules));
+
         test.done();
     },
 
+    testGetRulesRightContents: test => {
+        test.expect(4);
+        let fields = split("Rule    StJohns 1987    only    -       Apr     Sun>=1  0:01    1:00    D");
+        const ts = new Transition(fields);
+        fields = split("Rule    StJohns 1987    only    -       Oct     lastSun 0:01    0       S");
+        const te = new Transition(fields);
+
+        const rl = new RuleList("StJohns");
+        test.ok(rl);
+
+        rl.addTransition(ts);
+        rl.addTransition(te);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 1);
+        test.contains(rules[0], {
+            name: "StJohns",
+            from: 1987,
+            fromDate: Date.UTC(1987, 0, 1, 0, 0, 0),
+            to: 1987,
+            toDate: Date.UTC(1987, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+        test.done();
+    },
+
+    testAddTransitions: test => {
+        test.expect(3);
+        let fields = split("Rule    StJohns 1987    only    -       Apr     Sun>=1  0:01    1:00    D");
+        const ts = new Transition(fields);
+        fields = split("Rule    StJohns 1987    only    -       Oct     lastSun 0:01    0       S");
+        const te = new Transition(fields);
+
+        const rl = new RuleList("StJohns");
+        rl.addTransitions([ts, te]);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 1);
+        test.contains(rules[0], {
+            name: "StJohns",
+            from: 1987,
+            fromDate: Date.UTC(1987, 0, 1, 0, 0, 0),
+            to: 1987,
+            toDate: Date.UTC(1987, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+
+        test.done();
+    },
+
+    /*
     testConstructorRightContents: test => {
         test.expect(1);
         let fields = split("Rule    StJohns 1987    only    -       Apr     Sun>=1  0:01    1:00    D");
@@ -95,7 +223,7 @@ module.exports.testrule = {
         const te = new Transition(fields);
 
         const r = new Rule({
-            name: te.getName(),
+            name: ts.getName(),
             from: "1987",
             to: "1987",
             end: te
@@ -120,7 +248,7 @@ module.exports.testrule = {
         });
         test.done();
     },
-    
+
     testConstructorNoEnd: test => {
         test.expect(1);
         let fields = split("Rule    StJohns 1987    only    -       Apr     Sun>=1  0:01    1:00    D");
@@ -151,12 +279,12 @@ module.exports.testrule = {
         });
         test.done();
     },
-    
+
     testConstructorNoStartOrEnd: test => {
         test.expect(1);
 
         const r = new Rule({
-            name: "StJohns",
+            name: ts.getName(),
             from: "1987",
             to: "1987"
         });
@@ -170,6 +298,5 @@ module.exports.testrule = {
         });
         test.done();
     },
-
-
+    */
 };

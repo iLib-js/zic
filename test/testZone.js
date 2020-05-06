@@ -25,7 +25,7 @@ module.exports.testzone = {
         test.expect(7);
         const z = new Zone("America/St_Johns", {
             offset: "-3:30",
-            format: "LMT",
+            format: "L%sT",
             to: "1940",
             toDate: Date.parse("1940") - 1000
         }, {
@@ -35,7 +35,7 @@ module.exports.testzone = {
         test.ok(typeof(z) !== "undefined");
 
         test.equal(z.offset, "-3:30");
-        test.equal(z.format, "LMT");
+        test.equal(z.format, "L{s}T");
         test.equal(z.from, "1884");
         test.equal(z.fromDate, Date.UTC(1884, 0, 1, 0, 0, 0));
         test.equal(z.to, "1940");

@@ -33,6 +33,10 @@ function compareTransitions(left, right) {
 
 export default class RuleList {
     constructor(name) {
+        if (!name) {
+            throw "RuleList created without a name!";
+        }
+
         this.name = name;
         this.transitions = [];
 
@@ -53,12 +57,24 @@ export default class RuleList {
      * Transitions are the start or end of DST. These
      * are used to calculate the intervals when a rule is
      * applicable.
+     * @param {Transition} transition the transition to add
      */
     addTransition(transition) {
         transition.startYear = (transition.from === "min") ? 0 : parseInt(transition.from);
         transition.endYear = (transition.to === "max") ? Number.MAX_SAFE_INTEGER : parseInt(transition.to);
         this.rulesProcessed = false;
         this.transitions.push(transition);
+    }
+    
+    /**
+     * Add an array of transitions from an IANA zone info file.
+     * These are added one by one to the list.
+     * @param {Array.<Transition>} transitions the array of transitions to add
+     */
+    addTransitions(transitions) {
+        if (!transitions || !Array.isArray(transitions)) return;
+
+        transitions.forEach(transition => this.addTransition(transition));
     }
 
     processRules() {
@@ -79,6 +95,25 @@ export default class RuleList {
         });
 
         this.rules = [];
+        
+        // cases:
+        // northern hemisphere - DST starts in the early part of the year, ends in the late part
+        // southern hemisphere - DST starts in the late part of the year, ends in the early part of the next year
+        //
+        // starts - in the southern hemisphere may be in the previous year
+        // ends - in the southern hemisphere may be in the next year
+        //
+        // orphans - at the end of DST, there is a portion of fixed time which may end with DST time
+        // standard time, or some other time. This can create orphans which are transitions that have
+        // no companions in the same year.
+        //
+        // gaps - there may be times when there are gaps in the rules because the rules are not being used
+        // by any zone at that moment. In these cases, we should represent the rule as fixed time according
+        // to the last transition.
+        //
+        // overlaps - sometimes there are multiple conflicting rules that apply in the same year. Here we have
+        // to try and figure out which rule to use.
+        //
 
         let i = 0, j = 0;
         while (i < starts.length && j < ends.length) {
