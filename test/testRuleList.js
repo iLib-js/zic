@@ -171,23 +171,20 @@ module.exports.testrulelist = {
         test.done();
     },
 
-    /*
     testConstructorRightContents: test => {
-        test.expect(1);
+        test.expect(2);
         let fields = split("Rule    StJohns 1987    only    -       Apr     Sun>=1  0:01    1:00    D");
         const ts = new Transition(fields);
         fields = split("Rule    StJohns 1987    2006    -       Oct     lastSun 0:01    0       S");
         const te = new Transition(fields);
 
-        const r = new Rule({
-            name: ts.getName(),
-            from: "1987",
-            to: "1987",
-            start: ts,
-            end: te
-        });
+        const rl = new RuleList("StJohns");
+        rl.addTransitions([ts, te]);
 
-        test.contains(r, {
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.contains(rules[0], {
             name: "StJohns",
             from: 1987,
             fromDate: Date.UTC(1987, 0, 1, 0, 0, 0),
@@ -218,23 +215,22 @@ module.exports.testrulelist = {
     },
 
     testConstructorNoStart: test => {
-        test.expect(1);
+        test.expect(2);
         let fields = split("Rule    StJohns 1987    2006    -       Oct     lastSun 0:01    0       S");
         const te = new Transition(fields);
 
-        const r = new Rule({
-            name: ts.getName(),
-            from: "1987",
-            to: "1987",
-            end: te
-        });
+        const rl = new RuleList("StJohns");
+        rl.addTransitions([te]);
 
-        test.contains(r, {
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.contains(rules[0], {
             name: "StJohns",
             from: 1987,
             fromDate: Date.UTC(1987, 0, 1, 0, 0, 0),
-            to: 1987,
-            toDate: Date.UTC(1987, 11, 31, 23, 59, 59),
+            to: 2006,
+            toDate: Date.UTC(2006, 11, 31, 23, 59, 59),
             end: {
                 month: 10,
                 rule: "l0",
@@ -250,17 +246,17 @@ module.exports.testrulelist = {
     },
 
     testConstructorNoEnd: test => {
-        test.expect(1);
+        test.expect(2);
         let fields = split("Rule    StJohns 1987    only    -       Apr     Sun>=1  0:01    1:00    D");
         const ts = new Transition(fields);
-        const r = new Rule({
-            name: ts.getName(),
-            from: "1987",
-            to: "1987",
-            start: ts
-        });
 
-        test.contains(r, {
+        const rl = new RuleList("StJohns");
+        rl.addTransitions([ts]);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.contains(rules[0], {
             name: "StJohns",
             from: 1987,
             fromDate: Date.UTC(1987, 0, 1, 0, 0, 0),
@@ -278,25 +274,5 @@ module.exports.testrulelist = {
             }
         });
         test.done();
-    },
-
-    testConstructorNoStartOrEnd: test => {
-        test.expect(1);
-
-        const r = new Rule({
-            name: ts.getName(),
-            from: "1987",
-            to: "1987"
-        });
-
-        test.contains(r, {
-            name: "StJohns",
-            from: 1987,
-            fromDate: Date.UTC(1987, 0, 1, 0, 0, 0),
-            to: 1987,
-            toDate: Date.UTC(1987, 11, 31, 23, 59, 59)
-        });
-        test.done();
-    },
-    */
+    }
 };

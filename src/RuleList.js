@@ -30,7 +30,6 @@ function compareTransitions(left, right) {
     return result;
 }
 
-
 export default class RuleList {
     constructor(name) {
         if (!name) {
@@ -140,7 +139,7 @@ export default class RuleList {
 
         // orphan start[s]
         while (i < starts.length) {
-            const startDate = Math.max(starts[i].startYear, ends[j-1].endYear+1);
+            const startDate = ends[j-1] ? Math.max(starts[i].startYear, ends[j-1].endYear+1) : starts[i].startYear;
             const endDate = starts[i].endYear;
 
             this.rules.push(new Rule({
@@ -154,7 +153,7 @@ export default class RuleList {
 
         // orphan end[s]
         while (j < ends.length) {
-            const startDate = Math.max(starts[i-1].endYear+1, ends[j].startYear);
+            const startDate = starts[i-1] ? Math.max(starts[i-1].endYear+1, ends[j].startYear) : ends[j].startYear;
             const endDate = ends[j].endYear;
 
             this.rules.push(new Rule({
