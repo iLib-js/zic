@@ -171,7 +171,7 @@ module.exports.testrulelist = {
         test.done();
     },
 
-    testConstructorRightContents: test => {
+    testRuleListRightContents: test => {
         test.expect(2);
         let fields = split("Rule    StJohns 1987    only    -       Apr     Sun>=1  0:01    1:00    D");
         const ts = new Transition(fields);
@@ -214,7 +214,7 @@ module.exports.testrulelist = {
         test.done();
     },
 
-    testConstructorNoStart: test => {
+    testRuleListNoStart: test => {
         test.expect(2);
         let fields = split("Rule    StJohns 1987    2006    -       Oct     lastSun 0:01    0       S");
         const te = new Transition(fields);
@@ -245,7 +245,7 @@ module.exports.testrulelist = {
         test.done();
     },
 
-    testConstructorNoEnd: test => {
+    testRuleListNoEnd: test => {
         test.expect(2);
         let fields = split("Rule    StJohns 1987    only    -       Apr     Sun>=1  0:01    1:00    D");
         const ts = new Transition(fields);
@@ -273,6 +273,922 @@ module.exports.testrulelist = {
                 savingsInMinutes: 60
             }
         });
+        test.done();
+    },
+    
+    testRuleListGetRulesOneRule: test => {
+        test.expect(3);
+
+        const transitions = [
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "1988",
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "1988",
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            })
+        ];
+
+        const rl = new RuleList("StJohns");
+        rl.addTransitions(transitions);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 1);
+
+        test.deepEqual(rules[0], {
+            name: "StJohns",
+            from: "1987",
+            fromDate: Date.UTC(1987, 0, 1),
+            to: "1988",
+            toDate: Date.UTC(1988, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+
+        test.done();
+    },
+
+    testRuleListGetRulesMultipleStarts: test => {
+        test.expect(4);
+
+        const transitions = [
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "1988",
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "2006",
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1988",
+                to: "2006",
+                month: 4,
+                rule: "f0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+        ];
+
+        const rl = new RuleList("StJohns");
+        rl.addTransitions(transitions);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 2);
+
+        test.deepEqual(rules[0], {
+            name: "StJohns",
+            from: "1987",
+            fromDate: Date.UTC(1987, 0, 1),
+            to: "1988",
+            toDate: Date.UTC(1988, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[1], {
+            name: "StJohns",
+            from: "1988",
+            fromDate: Date.UTC(1988, 0, 1),
+            to: "2006",
+            toDate: Date.UTC(2006, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "f0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+
+        test.done();
+    },
+
+    testRuleListGetRulesMultipleEnds: test => {
+        test.expect(4);
+
+        const transitions = [
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "2006",
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "1988",
+                month: 10,
+                rule: "l0",
+                time: "1:00",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1988",
+                to: "2006",
+                month: 11,
+                rule: "f0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            })
+        ];
+
+        const rl = new RuleList("StJohns");
+        rl.addTransitions(transitions);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 2);
+
+        test.deepEqual(rules[0], {
+            name: "StJohns",
+            from: "1987",
+            fromDate: Date.UTC(1987, 0, 1),
+            to: "1988",
+            toDate: Date.UTC(1988, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "1:00",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 60,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[1], {
+            name: "StJohns",
+            from: "1988",
+            fromDate: Date.UTC(1988, 0, 1),
+            to: "2006",
+            toDate: Date.UTC(2006, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 11,
+                rule: "f0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+
+        test.done();
+    },
+
+    testRuleListGetRulesOverlappingStartsAndEnds: test => {
+        test.expect(5);
+
+        const transitions = [
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "1994",
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "1990",
+                month: 10,
+                rule: "l0",
+                time: "1:00",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1995",
+                to: "2006",
+                month: 4,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1991",
+                to: "2006",
+                month: 11,
+                rule: "f0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            })
+        ];
+
+        const rl = new RuleList("StJohns");
+        rl.addTransitions(transitions);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 3);
+
+        test.deepEqual(rules[0], {
+            name: "StJohns",
+            from: "1987",
+            fromDate: Date.UTC(1987, 0, 1),
+            to: "1990",
+            toDate: Date.UTC(1990, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "1:00",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 60,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[1], {
+            name: "StJohns",
+            from: "1991",
+            fromDate: Date.UTC(1991, 0, 1),
+            to: "1994",
+            toDate: Date.UTC(1994, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 11,
+                rule: "f0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[2], {
+            name: "StJohns",
+            from: "1995",
+            fromDate: Date.UTC(1995, 0, 1),
+            to: "2006",
+            toDate: Date.UTC(2006, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 11,
+                rule: "f0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+
+        test.done();
+    },
+
+    testRuleListGetRulesOrphanStart: test => {
+        test.expect(4);
+
+        const transitions = [
+            new Transition({
+                name: "StJohns",
+                from: "2007",
+                to: "2011",
+                month: 3,
+                rule: "0>=8",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "2007",
+                to: "2010",
+                month: 11,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            })
+        ];
+
+        const rl = new RuleList("StJohns");
+        rl.addTransitions(transitions);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 2);
+
+        test.deepEqual(rules[0], {
+            name: "StJohns",
+            from: "2007",
+            fromDate: Date.UTC(2007, 0, 1),
+            to: "2010",
+            toDate: Date.UTC(2010, 11, 31, 23, 59, 59),
+            start: {
+                month: 3,
+                rule: "0>=8",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 11,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[1], {
+            name: "StJohns",
+            from: "2011",
+            fromDate: Date.UTC(2011, 0, 1),
+            to: "2011",
+            toDate: Date.UTC(2011, 11, 31, 23, 59, 59),
+            start: {
+                month: 3,
+                rule: "0>=8",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            }
+        });
+
+        test.done();
+    },
+
+    testRuleListGetRulesOrphanEnd: test => {
+        test.expect(4);
+
+        const transitions = [
+            new Transition({
+                name: "StJohns",
+                from: "2007",
+                to: "2010",
+                month: 3,
+                rule: "0>=8",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "2007",
+                to: "2011",
+                month: 11,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            })
+        ];
+
+        const rl = new RuleList("StJohns");
+        rl.addTransitions(transitions);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 2);
+
+        test.deepEqual(rules[0], {
+            name: "StJohns",
+            from: "2007",
+            fromDate: Date.UTC(2007, 0, 1),
+            to: "2010",
+            toDate: Date.UTC(2010, 11, 31, 23, 59, 59),
+            start: {
+                month: 3,
+                rule: "0>=8",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 11,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[1], {
+            name: "StJohns",
+            from: "2011",
+            fromDate: Date.UTC(2011, 0, 1),
+            to: "2011",
+            toDate: Date.UTC(2011, 11, 31, 23, 59, 59),
+            end: {
+                month: 11,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+
+        test.done();
+    },
+
+    testRuleListGetRulesComplexRules: test => {
+        test.expect(7);
+
+        const transitions = [
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "1988",
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "2006",
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1988",
+                to: "1989",
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "2:00",
+                abbreviation: "DD"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1989",
+                to: "2006",
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "2007",
+                to: "2011",
+                month: 3,
+                rule: "0>=8",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "2007",
+                to: "2010",
+                month: 11,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            })
+        ];
+
+        const rl = new RuleList("StJohns");
+        rl.addTransitions(transitions);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 5);
+
+        test.deepEqual(rules[0], {
+            name: "StJohns",
+            from: "1987",
+            fromDate: Date.UTC(1987, 0, 1),
+            to: "1988",
+            toDate: Date.UTC(1988, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[1], {
+            name: "StJohns",
+            from: "1988",
+            fromDate: Date.UTC(1988, 0, 1),
+            to: "1989",
+            toDate: Date.UTC(1989, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "2:00",
+                abbreviation: "DD",
+                timeInMinutes: 1,
+                savingsInMinutes: 120
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[2], {
+            name: "StJohns",
+            from: "1989",
+            fromDate: Date.UTC(1989, 0, 1),
+            to: "2006",
+            toDate: Date.UTC(2006, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[3], {
+            name: "StJohns",
+            from: "2007",
+            fromDate: Date.UTC(2007, 0, 1),
+            to: "2010",
+            toDate: Date.UTC(2010, 11, 31, 23, 59, 59),
+            start: {
+                month: 3,
+                rule: "0>=8",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 11,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[4], {
+            name: "StJohns",
+            from: "2011",
+            fromDate: Date.UTC(2011, 0, 1),
+            to: "2011",
+            toDate: Date.UTC(2011, 11, 31, 23, 59, 59),
+            start: {
+                month: 3,
+                rule: "0>=8",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            }
+        });
+
+        test.done();
+    },
+
+    testRuleListGetRulesWithGaps: test => {
+        test.expect(4);
+
+        const transitions = [
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "1990",
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1987",
+                to: "1990",
+                month: 10,
+                rule: "l0",
+                time: "1:00",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1995",
+                to: "2006",
+                month: 4,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D"
+            }),
+            new Transition({
+                name: "StJohns",
+                from: "1995",
+                to: "2006",
+                month: 11,
+                rule: "f0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S"
+            })
+        ];
+
+        const rl = new RuleList("StJohns");
+        rl.addTransitions(transitions);
+
+        const rules = rl.getRules();
+        test.ok(rules);
+
+        test.equal(rules.length, 2);
+
+        test.deepEqual(rules[0], {
+            name: "StJohns",
+            from: "1987",
+            fromDate: Date.UTC(1987, 0, 1),
+            to: "1990",
+            toDate: Date.UTC(1990, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "0>=1",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 10,
+                rule: "l0",
+                time: "1:00",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 60,
+                savingsInMinutes: 0
+            }
+        });
+        test.deepEqual(rules[1], {
+            name: "StJohns",
+            from: "1995",
+            fromDate: Date.UTC(1995, 0, 1),
+            to: "2006",
+            toDate: Date.UTC(2006, 11, 31, 23, 59, 59),
+            start: {
+                month: 4,
+                rule: "l0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "1:00",
+                abbreviation: "D",
+                timeInMinutes: 1,
+                savingsInMinutes: 60
+            },
+            end: {
+                month: 11,
+                rule: "f0",
+                time: "0:01",
+                zoneChar: "w",
+                savings: "0",
+                abbreviation: "S",
+                timeInMinutes: 1,
+                savingsInMinutes: 0
+            }
+        });
+
         test.done();
     }
 };
