@@ -86,7 +86,8 @@ export default class ZoneList {
     toJson() {
         this.processZones();
         return {
-            zones: this.zones.map(zone => {
+            name: this.name,
+            intervals: this.zones.map(zone => {
                 return zone.toJson();
             })
         }

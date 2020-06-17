@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { parseDate, lastSecond } from '../src/utils';
+import { parseDate, lastSecond, ianaDateStr } from '../src/utils';
 
 module.exports.testutils = {
     testParseDateYearOnly: test => {
@@ -198,6 +198,41 @@ module.exports.testutils = {
         // treat present the same as max date
         test.ok(Date.now() - lastSecond("present") < 1000);
         test.done();
-    }
+    },
 
+    testIanaDataStrYearOnly: test => {
+        test.expect(1);
+        test.equal(ianaDateStr(Date.UTC(2006, 0, 1)), "2006");
+        test.done();
+    },
+
+    testIanaDataStrYearMonthOnly: test => {
+        test.expect(1);
+        test.equal(ianaDateStr(Date.UTC(2006, 2, 1)), "2006 Mar");
+        test.done();
+    },
+
+    testIanaDataStrYearMonthDayOnly: test => {
+        test.expect(1);
+        test.equal(ianaDateStr(Date.UTC(2006, 5, 2)), "2006 Jun 2");
+        test.done();
+    },
+
+    testIanaDataStrYearMonthDayHour: test => {
+        test.expect(1);
+        test.equal(ianaDateStr(Date.UTC(2006, 5, 2, 3)), "2006 Jun 2 3:00");
+        test.done();
+    },
+
+    testIanaDataStrYearMonthDayHourPM: test => {
+        test.expect(1);
+        test.equal(ianaDateStr(Date.UTC(2006, 5, 2, 13)), "2006 Jun 2 13:00");
+        test.done();
+    },
+
+    testIanaDataStrAll: test => {
+        test.expect(1);
+        test.equal(ianaDateStr(Date.UTC(2006, 5, 2, 3, 23)), "2006 Jun 2 3:23");
+        test.done();
+    }
 };

@@ -84,12 +84,11 @@ The format is:
 
 ```json
 {
+    "name": "NYC",              // name of the rule
     "rules": [
         {                       // example rule that observes DST
-            "dates": {
-                "from": 1995,   // year that this rule took effect
-                "to": "max",    // year that this rule ended, or "max" if it is ongoing
-            },
+            "from": 1995,       // year that this rule took effect
+            "to": "max",        // year that this rule ended, or "max" if it is ongoing
             "start": {          // info about the start of DST
                 "julianday": 78189.5    // Julian day when the transition happens. Either specify the
                                 // "julianday" property or all of the "month", "rule", and "time"
@@ -103,8 +102,9 @@ The format is:
                 "abbreviation": "D"     // character to replace into the abbreviation for daylight time
             },
             "end": {            // info about the end of DST
-                "julian": 78322.5       // Julian day when the transition happens. Either specify the "j"
-                                // property or all of the "m", "r", and "t" properties, but not both sets.
+                "julianday": 78322.5    // Julian day when the transition happens. Either specify the "julianday"
+                                // property or all of the "month", "rule", and "time" properties, but not
+                                // both sets.
                 "month": 3,     // month that it ends
                 "rule": "l0",   // rule for the day it ends "l" = "last", numbers are Sun=0 through Sat=6.
                                 // Other syntax is "0>7". This means the 0-day (Sun) after the 7th of the
@@ -136,12 +136,11 @@ Each file has the following format:
 
 ```json
 {
+    "name": "America/Los_Angeles",  // IANA name of the zone
     "intervals": [
         {                           // example interval that uses a rule
-            "dates": {
-                "from": 1967,       // date that this rule took effect
-                "to": "1968-03-20"  // date that this rule ended, or "max" if it is ongoing
-            },
+            "from": 1967,           // date that this rule took effect
+            "to": "1968-03-20"      // date that this rule ended, or "max" if it is ongoing
             "offset": "-7:0",       // offset from UTC
             "abbreviation": "M{c}T",    // standard abbreviation. For time zones that observe DST, the {c}
                                     // replacement is replaced with the letter in the end.abbreviation or
@@ -150,10 +149,8 @@ Each file has the following format:
                                     // particular rule in the rule file that is used
         },
         {                           // example interval where the zone does not observe DST at all
-            "dates": {
-                "from": "1968-03-21"    // date that this rule took effect
-                "to": "max"         // date that this rule ended, or "max" if it is ongoing
-            },
+            "from": "1968-03-21"    // date that this rule took effect
+            "to": "max"             // date that this rule ended, or "max" if it is ongoing
             "offset": "-7:0",       // offset from UTC
             "abbreviation": "MST",  // standard abbreviation
             "rule": "-"             // no DST rule applicable during this interval

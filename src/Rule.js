@@ -75,10 +75,8 @@ class Rule {
 
     toJson() {
         return {
-            dates: {
-                start: this.dateStart,
-                end: this.dateEnd
-            },
+            from: this.from,
+            to: this.to,
             start: this.start,
             end: this.end
         };

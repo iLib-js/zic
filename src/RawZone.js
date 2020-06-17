@@ -57,8 +57,8 @@ export default class RawZone {
             Object.assign(this, fields);
         }
 
-        if (typeof(this.to) === 'undefined' || this.to === "present") {
-            this.toDate =  Date.now();
+        if (!this.to || this.to === "present") {
+            this.toDate = Date.now();
         } else {
             const d = parseDate(this.to);
             this.toDate = d.getTimeExtended() - 1000;

@@ -114,6 +114,7 @@ export default (argv) => {
 
     // find all the files first
     ["africa", "antarctica", "asia", "australasia", "europe", "northamerica", "southamerica"].forEach(fileName => {
+        logger.info(`Reading ${fileName}...`);
         let file = new IANAFile(path.join(settings.sourceDir, fileName));
 
         zoneSet.addTransitions(file.getTransitions());
@@ -129,7 +130,7 @@ export default (argv) => {
         const parent = path.dirname(filePath);
         mkdirp.sync(parent);
         logger.info(`${filePath} ...`);
-        // fs.writeFileSync(filePath, list.toJson, 4);
+        fs.writeFileSync(filePath, JSON.stringify(list.toJson(), undefined, 4), "utf-8");
     }
 
     for (let listName in zoneLists) {
@@ -138,7 +139,7 @@ export default (argv) => {
         const parent = path.dirname(filePath);
         mkdirp.sync(parent);
         logger.info(`${filePath} ...`);
-        // fs.writeFileSync(filePath, list.toJson, 4);
+        fs.writeFileSync(filePath, JSON.stringify(list.toJson(), undefined, 4), "utf-8");
     }
 
     logger.info("Done");

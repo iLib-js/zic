@@ -18,17 +18,24 @@
  */
 
 import Rule from './Rule';
-import { convertToMinutes } from './utils';
+import { lastSecond, ianaDateStr } from './utils';
 
 const path = require("path");
 
 function compareTransitions(left, right) {
-    let result = left.startYear - right.startYear;
+    let result = left.fromDate - right.fromDate;
     if (result === 0) {
-        result = left.endYear - right.endYear;
+        result = left.toDate - right.toDate;
     }
     return result;
 }
+
+// as long as both the starts are before the other's end,
+// then there is an overlap between the times
+function isOverlapping(left, right) {
+    return (left && right && left.fromDate <= right.toDate && right.fromDate <= left.toDate);
+}
+
 
 export default class RuleList {
     constructor(name) {
@@ -59,12 +66,12 @@ export default class RuleList {
      * @param {Transition} transition the transition to add
      */
     addTransition(transition) {
-        transition.startYear = (transition.from === "min") ? 0 : parseInt(transition.from);
-        transition.endYear = (transition.to === "max") ? Number.MAX_SAFE_INTEGER : parseInt(transition.to);
+        // transition.fromDate = (transition.from === "min") ? 0 : parseInt(transition.from);
+        // transition.toDate = (transition.to === "max") ? Number.MAX_SAFE_INTEGER : parseInt(transition.to);
         this.rulesProcessed = false;
         this.transitions.push(transition);
     }
-    
+
     /**
      * Add an array of transitions from an IANA zone info file.
      * These are added one by one to the list.
@@ -94,7 +101,7 @@ export default class RuleList {
         });
 
         this.rules = [];
-        
+
         // cases:
         // northern hemisphere - DST starts in the early part of the year, ends in the late part
         // southern hemisphere - DST starts in the late part of the year, ends in the early part of the next year
@@ -116,53 +123,123 @@ export default class RuleList {
 
         let i = 0, j = 0;
         while (i < starts.length && j < ends.length) {
-            const startDate = Math.max(starts[i].startYear, ends[j].startYear);
-            const endDate = Math.min(starts[i].endYear, ends[j].endYear);
+            let startDate = Math.max(starts[i].fromDate, ends[j].fromDate);
+            let endDate = Math.min(starts[i].toDate, ends[j].toDate);
 
-            this.rules.push(new Rule({
-                name: starts[i].name,
-                from: startDate,
-                to: endDate,
-                start: starts[i],
-                end: ends[j]
-            }));
-
-            if (starts[i].endYear < ends[j].endYear) {
-                i++;
-            } else if (starts[i].endYear > ends[j].endYear) {
-                j++;
-            } else {
-                i++;
-                j++;
+            // first, figure out the orphan starts
+            if (starts[i].fromDate < ends[j].fromDate) {
+                // orphan start
+                if (starts[i].toDate < ends[j].fromDate) {
+                    // start without an end in that year!
+                    this.rules.push(new Rule({
+                        name: starts[i].name,
+                        from: starts[i].from,
+                        to: starts[i].to,
+                        start: starts[i]
+                    }));
+                    i++;
+                    continue;
+                } else {
+                    // start starts before end starts and overlaps
+                    // first the orphan part
+                    this.rules.push(new Rule({
+                        name: starts[i].name,
+                        from: starts[i].from,
+                        to: ends[j].from,
+                        start: starts[i]
+                    }));
+                }
+            } else if (ends[j].fromDate < starts[i].fromDate) {
+                if (ends[j].toDate < starts[i].fromDate) {
+                    // end without a start in that year!
+                    this.rules.push(new Rule({
+                        name: ends[j].name,
+                        from: ends[j].from,
+                        to: ends[j].to,
+                        end: ends[j]
+                    }));
+                    j++;
+                    continue;
+                } else {
+                    // end starts before start starts and overlaps
+                    // first the orphan part
+                    this.rules.push(new Rule({
+                        name: starts[i].name,
+                        from: starts[i].from,
+                        to: ends[j].from,
+                        start: starts[i]
+                    }));
+                }
             }
-        }
 
-        // orphan start[s]
-        while (i < starts.length) {
-            const startDate = ends[j-1] ? Math.max(starts[i].startYear, ends[j-1].endYear+1) : starts[i].startYear;
-            const endDate = starts[i].endYear;
+            // ... then process all the overlapping rules
+            while (i < starts.length && j < ends.length && isOverlapping(starts[i], ends[j])) {
+                startDate = Math.max(starts[i].fromDate, ends[j].fromDate);
+                endDate = Math.min(starts[i].toDate, ends[j].toDate);
 
-            this.rules.push(new Rule({
-                name: starts[i].name,
-                from: startDate,
-                to: endDate,
-                start: starts[i],
-            }));
-            i++;
-        }
+                this.rules.push(new Rule({
+                    name: starts[i].name,
+                    from: (starts[i].fromDate < ends[j].fromDate) ? ends[j].from : starts[i].from,
+                    to: (starts[i].toDate < ends[j].toDate) ? starts[i].to : ends[j].to,
+                    start: starts[i],
+                    end: ends[j]
+                }));
 
-        // orphan end[s]
-        while (j < ends.length) {
-            const startDate = starts[i-1] ? Math.max(starts[i-1].endYear+1, ends[j].startYear) : ends[j].startYear;
-            const endDate = ends[j].endYear;
+                if (starts[i].toDate < ends[j].toDate) {
+                    i++;
+                } else if (starts[i].toDate > ends[j].toDate) {
+                    j++;
+                } else {
+                    i++;
+                    j++;
+                }
+            }
 
-            this.rules.push(new Rule({
-                name: ends[j].name,
-                from: startDate,
-                to: endDate,
-                end: ends[j],
-            }));
-            j++;
+            // finally, process the orphan ends
+            if (i < starts.length && j >= ends.length) {
+             // add 1000 to get it to the second after the last second of the the previous date
+                startDate = lastSecond(ends[j-1].to) + 1000;
+                this.rules.push(new Rule({
+                    name: starts[i].name,
+                    from: ianaDateStr(startDate),
+                    fromDate: startDate,
+                    to: starts[i].to,
+                    start: starts[i],
+                }));
+                i++;
+            } else if (i >= starts.length && j < ends.length) {
+                // add 1000 to get it to the second after the last second of the the previous date
+                startDate = lastSecond(starts[i-1].to) + 1000;
+                this.rules.push(new Rule({
+                    name: ends[j].name,
+                    from: ianaDateStr(startDate),
+                    fromDate: startDate,
+                    to: ends[j].to,
+                    end: ends[j],
+                }));
+                j++;
+            } else if (isOverlapping(starts[i], ends[j])) {
+                if (starts[i].toDate > ends[j].toDate) {
+                    this.rules.push(new Rule({
+                        name: starts[i].name,
+                        from: ends[j].to,
+                        to: starts[i].to,
+                        start: starts[i],
+                    }));
+                    i++;
+                } else if (starts[i].toDate < ends[j].toDate) {
+                    this.rules.push(new Rule({
+                        name: ends[j].name,
+                        from: starts[i].to,
+                        to: ends[j].to,
+                        end: ends[j],
+                    }));
+                    j++;
+                }
+            }
+            // after this, there should be either a gap or the end of the rules. IF
+            // there is a gap, we restart processing above looking for new orphan
+            // starts
         }
 
         this.rulesProcessed = true;
@@ -178,15 +255,18 @@ export default class RuleList {
      * from the given "from" date to the the given "to" date.
      * @return {Array<Rule>} the rules applicable in that interval
      */
-    getApplicableRules(from, to) {
+    getApplicableRules(fromDate, toDate) {
         this.processRules();
 
-        return this.rules.filter(rule => {
-            return (rule.fromDate <= from && from <= rule.toDate) ||
-                (rule.fromDate <= to && to <= rule.toDate) ||
-                (from <= rule.fromDate && rule.fromDate <= to) ||
-                (from <= rule.toDate && rule.toDate <= to);
+        let rules = [];
+
+        this.rules.forEach((rule, index) => {
+            if (isOverlapping(rule, { fromDate, toDate })) {
+                rules.push(index);
+            }
         });
+
+        return rules;
     }
 
     /**
@@ -208,7 +288,9 @@ export default class RuleList {
     }
 
     toJson() {
+        this.processRules();
         return {
+            name: this.name,
             rules: this.rules.map((rule) => {
                 return rule.toJson();
             })

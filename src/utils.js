@@ -33,6 +33,20 @@ const months = {
     "nov": 11,
     "dec": 12
 };
+const monthsReverse = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+];
 
 export function pad2(num) {
     if (num < 0 && num > -10) {
@@ -119,8 +133,6 @@ export function lastSecond(dateStr) {
         month = d.getMonths(),
         day = d.getDays(),
         hour = d.getHours(),
-        minute = d.getMinutes(),
-        second = d.getSeconds(),
         date;
 
     if (hour === 0) {
@@ -164,3 +176,20 @@ export function lastSecond(dateStr) {
     }
 };
 
+export function ianaDateStr(date) {
+    const d = DateFactory({
+        unixtime: date,
+        timezone: "Etc/UTC"
+    });
+    let output = d.getYears();
+    if (d.getMonths() > 1) {
+        output += " " + monthsReverse[d.getMonths()-1];
+        if (d.getDays() > 1) {
+            output += " " + d.getDays();
+            if (d.getHours() > 0) {
+                output += " " + d.getHours() + ":" + pad2(d.getMinutes());
+            }
+        }
+    }
+    return output;
+}

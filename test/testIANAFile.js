@@ -333,7 +333,7 @@ Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
     },
 
     testConstructorLoadFileRightContents: test => {
-        test.expect(36);
+        test.expect(37);
 
         const z = new IANAFile("./test/testfiles/samplerules");
         test.ok(typeof(z) !== "undefined");
@@ -344,7 +344,7 @@ Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
         const rawZones = z.getRawZones();
 
         test.equal(rawZones.length, 6);
-        
+
         const zs = new ZoneSet();
         test.ok(typeof(zs) !== "undefined");
 
@@ -355,13 +355,15 @@ Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
 
         let zoneList = zoneLists["Pacific/Auckland"];
         let zones = zoneList.getZones();
-        
+
         test.equal(zones.length, 3);
 
         test.equal(zones[0].name, "Pacific/Auckland");
         test.equal(zones[0].offset, "11:39:04");
         test.equal(zones[0].format, "LMT");
-        test.ok(!zones[0].getRules());
+        let rules = zones[0].getRuleArray();
+        test.ok(rules);
+        test.equal(rules.length, 0);
         test.equal(zones[0].from, "1883"); // time zones were first used in 1883
         test.equal(zones[0].fromDate, Date.UTC(1883,0,1,0,0,0));
         test.equal(zones[0].to, "1868 Nov 2");
@@ -369,33 +371,33 @@ Zone    Pacific/Chatham    10:55:44 -      LMT     1915 Oct 26
 
         test.equal(zones[1].name, "Pacific/Auckland");
         test.equal(zones[1].offset, "11:30");
-        test.equal(zones[1].format, "NZ{s}T");
+        test.equal(zones[1].format, "NZ%sT");
         test.equal(zones[1].from, "1868 Nov 2");
         test.equal(zones[1].fromDate, Date.UTC(1868,10,2,0,0,0));
         test.equal(zones[1].to, "1946 Jan 1");
         test.equal(zones[1].toDate, Date.UTC(1945,11,31,23,59,59));
         test.equal(zones[1].rule, "NZ");
-        let rules = zones[1].getRules();
+        rules = zones[1].getRuleArray();
         test.ok(rules);
         test.equal(rules.length, 4);
-        test.equal(rules[0].getName(), "NZ");
+        test.deepEqual(rules, [0, 1, 2, 3]);
 
         test.equal(zones[2].name, "Pacific/Auckland");
         test.equal(zones[2].offset, "12:00");
-        test.equal(zones[2].format, "NZ{s}T");
+        test.equal(zones[2].format, "NZ%sT");
         test.equal(zones[2].from, "1946 Jan 1");
         test.equal(zones[2].fromDate, Date.UTC(1946,0,1,0,0,0));
         test.equal(zones[2].to, "present");
         test.ok(Date.now() - zones[2].toDate < 1000);
         test.equal(zones[2].rule, "NZ");
-        rules = zones[2].getRules();
+        rules = zones[2].getRuleArray();
         test.ok(rules);
         test.equal(rules.length, 8);
-        test.equal(rules[0].getName(), "NZ");
+        test.deepEqual(rules, [4, 5, 6, 7, 8, 9, 10, 11]);
 
         zoneList = zoneLists["Pacific/Chatham"];
         zones = zoneList.getZones();
-        
+
         test.equal(zones.length, 3);
 
         test.done();

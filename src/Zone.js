@@ -30,6 +30,7 @@ export default class Zone {
         this.from = previousRawZone.to || "1883";
         this.fromDate = previousRawZone.toDate ? previousRawZone.toDate + 1000 : Date.UTC(1883, 0, 1);
         this.toDate = rawZone.toDate;
+        this.offset = rawZone.offset;
 
         if (!this.to) {
             this.to = "present";
@@ -39,11 +40,9 @@ export default class Zone {
             this.name = previousRawZone.name;
         }
 
-        if (this.rule && rules[this.rule]) {
-            this.ruleList = rules[this.rule].getApplicableRules(this.fromDate, this.toDate);
-        }
+        this.ruleList = (this.rule && rules[this.rule]) ? rules[this.rule].getApplicableRules(this.fromDate, this.toDate) : [];
 
-        this.format = this.format && this.format.replace(/%s/g, "{s}");
+        this.format = this.format;
      }
 
     getName() {
@@ -54,10 +53,17 @@ export default class Zone {
 
     }
 
-    getRules() {
+    getRuleArray() {
         return this.ruleList;
     }
 
     toJson() {
+        return [{
+            from: this.from,
+            to: this.to,
+            offset: this.offset,
+            abbreviation: this.format,
+            rule: '-'
+        }];
     }
 }
